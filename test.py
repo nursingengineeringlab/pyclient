@@ -3,7 +3,6 @@ import queue
 import atexit
 import time
 from logger import Logger
-from apihandler import api_handler
 from senior import senior_manager
 import math
 import asyncio
@@ -12,18 +11,12 @@ import argparse
 import os
 import multiprocessing
 from random import randint
-from apihandler import custom_senior_delete
-import requests
 
 # seed random number generator
 # generate some integers
 
 websocket_url = "ws://127.0.0.1:8000/"
 # websocket_url = "ws://shiywang.asuscomm.com:30007/"
-base_url = "http://127.0.0.1:8000/"
-request_headers = {'Content-Type': 'application/json'}
-api_user = "test"
-api_password = "test"
 
 senior_queue = queue.Queue()
 
@@ -83,13 +76,6 @@ class TestECG(Logger):
                         self.last_data_update_time = int(time.time())
                         senior.seq = senior.seq + 1
 
-
-def cleanup_user():
-    r = requests.get(base_url+"seniors/?format=json", headers=request_headers, auth=(api_user, api_password))
-    print(r.json())
-    for rs in r.json()['results']:
-        print(rs['device_id'])
-        custom_senior_delete(rs['device_id'])
 
 
 if __name__ == '__main__':
