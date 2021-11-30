@@ -4,10 +4,10 @@ import queue
 import threading
 import json
 
-api_user = "test"
+api_user = "test1"
 api_password = "test"
-base_url = "http://127.0.0.1:8000/"
-# base_url = "http://shiywang.asuscomm.com:30007/"
+#base_url = "http://127.0.0.1:8000/"
+base_url = "http://shiywang.asuscomm.com:30007/"
 request_headers = {'Content-Type': 'application/json'}
 
 
