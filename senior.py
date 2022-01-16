@@ -71,7 +71,7 @@ class SeniorManager(Logger):
 
         return senior_list
 
-    def make_senior(self):
+    def make_senior(self, url):
         gender = choice(['male', 'female'])
         device = choice([RRIDevice, TemperatureDevice, SPO2Device])()  # Online RR_Device for now
         name = names.get_full_name(gender=gender)
@@ -90,7 +90,7 @@ class SeniorManager(Logger):
             },
         }
 
-        res = custom_create_senior(json.dumps(userdata))
+        res = custom_create_senior(json.dumps(userdata), url)
         if res is True:
             senior = Senior(device, userdata)
             file_manager.save_data(senior)
@@ -100,8 +100,8 @@ class SeniorManager(Logger):
             self.error("Failed to create senior")
             return None
 
-    def delete_senior(self, senior):
-        custom_senior_delete(senior.id)
+    def delete_senior(self, senior, url):
+        custom_senior_delete(senior.id, url)
 
 
 senior_manager = SeniorManager()

@@ -3,7 +3,8 @@ import queue
 import atexit
 import time
 from logger import Logger
-from senior import senior_manager
+import senior
+import apihandler
 import math
 import asyncio
 import websockets
@@ -19,6 +20,7 @@ from random import randint
 websocket_url = "ws://shiywang.asuscomm.com:30007/"
 base_url = ''
 port = ''
+api_url = ''
 senior_queue = queue.Queue()
 
 UPDATE_DATA_TIMEOUT = 450
@@ -32,49 +34,49 @@ def exit_handler():
     print("Deleting Seniors")
     for senior in senior_queue.queue:
         # pass
-        senior_manager.delete_senior(senior)
+        senior.senior_manager.delete_senior(senior, api_url)
     print("End")
 
 
 class TestECG(Logger):
-    def __init__(self, num_senior):
+    def __init__(self, num_senior, url):
         Logger.__init__(self, "Main")
         self.num_senior = num_senior
         self.update_percentage = math.ceil(num_senior * 0.15)
         self.debug("Test ECG")
         self.last_ping_time = 0
         self.last_data_update_time = int(time.time())
-
-        seniors = senior_manager.get_senior(num_senior)
+        self.api_url = url
+        seniors = senior.senior_manager.get_senior(num_senior)
 
         if len(seniors) == 0:
             print("create new seniors")
-            seniors = [senior_manager.make_senior() for _ in range(num_senior)]
+            seniors = [senior.senior_manager.make_senior(api_url) for _ in range(num_senior)]
 
-        for senior in seniors:
-            senior_queue.put(senior)
+        for s in seniors:
+            senior_queue.put(s)
 
 
     async def run(self):
         url = websocket_url + 'ws/sensor/RR'
         async with websockets.connect(url) as websocket:
             while True:
-                for senior in senior_queue.queue:
-                    if int(time.time()) - senior.last_data_update_time > UPDATE_DATA_TIMEOUT:
+                for s in senior_queue.queue:
+                    if int(time.time()) - s.last_data_update_time > UPDATE_DATA_TIMEOUT:
                         new_rand_value = randint(60, 120)
                         # senior.device.value = new_rand_value
                         # data = senior.get_data()
                         test_json = {
-                            "device_id": senior.id,
-                            "sequence_id": senior.seq,
+                            "device_id": s.id,
+                            "sequence_id": s.seq,
                             "time": int(round(time.time() * 1000)),
                             "value": new_rand_value,
                             "battery": 60,
                         }
                         print(json.dumps(test_json))
                         await websocket.send(json.dumps(test_json))
-                        senior.last_data_update_time = int(time.time())
-                        senior.seq = senior.seq + 1
+                        s.last_data_update_time = int(time.time())
+                        s.seq = s.seq + 1
 
 
 
@@ -90,8 +92,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
     base_url = args.url
     port = str(args.port)
-
     websocket_url = "ws://" + base_url + ":" + port + "/"
+    api_url =  "http://" + base_url + ":" + port + "/"
+    print(api_url)
+    api_handler = apihandler.ApiHandler(api_url)
+
 
 
     input_num = args.num
@@ -105,5 +110,5 @@ if __name__ == '__main__':
             pass
 
     atexit.register(exit_handler)
-    test_run = TestECG(input_num)
+    test_run = TestECG(input_num, api_url)
     asyncio.run(test_run.run())

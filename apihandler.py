@@ -1,29 +1,31 @@
-import os
 import requests
 import queue
 import threading
 import json
-from test import base_url
-from test import port
 
 api_user = "test1"
 api_password = "test"
+<<<<<<< HEAD
 api_url =  "http://" + base_url + ":" + port + "/"
-request_headers = {'Content-Type': 'application/json'}
+=======
 
+>>>>>>> fix import url circle
+request_headers = {'Content-Type': 'application/json'}
+api_url = ''
 
 class ApiHandler(threading.Thread):
-	def __init__(self):
+	def __init__(self, url):
 		super(ApiHandler, self).__init__()
 		self.__output_queue = queue.Queue()
 		self.__function_queue = queue.Queue()
 		self.timeout = 1.0/60
+		self.api_url = url
 
 	def onThread(self, function, *args, **kwargs):
 		self.__function_queue.put((function, args, kwargs))
 
 	def create_senior(self, data):
-		r = requests.post(api_url+"seniors/", headers=request_headers, auth=(api_user, api_password), data=data)
+		r = requests.post(self.api_url+"seniors/", headers=request_headers, auth=(api_user, api_password), data=data)
 		if r.status_code == 201:
 			return True
 		else:
@@ -31,12 +33,12 @@ class ApiHandler(threading.Thread):
 			return False
 
 	def delete_user(self, device_id):
-		r = requests.delete(api_url+"seniors/"+device_id, auth=(api_user, api_password))
+		r = requests.delete(self.api_url+"seniors/"+device_id, auth=(api_user, api_password))
 
 	def send_data(self, senior):
 		device_type = senior.device.type.name
 		data = senior.get_data()
-		url = api_url + "sensordata/" + device_type + '/'
+		url = self.api_url + "sensordata/" + device_type + '/'
 		r = requests.post(url, headers=request_headers, auth=(api_user, api_password), data=json.dumps(data))
 
 	def send_ping(self, senior):
@@ -44,7 +46,7 @@ class ApiHandler(threading.Thread):
 			"device_id": senior.id,
 			"battery": senior.get_battery(),
 		}
-		url = api_url + "ping/"
+		url = self.api_url + "ping/"
 		r = requests.post(url, headers=request_headers, auth=(api_user, api_password), data=json.dumps(data))
 
 	def run(self):
@@ -59,12 +61,12 @@ class ApiHandler(threading.Thread):
 
 
 # to be called from another thread on program exit
-def custom_senior_delete(device_id):
-	r = requests.delete(api_url+"seniors/"+device_id, auth=(api_user, api_password))
+def custom_senior_delete(device_id, url):
+	r = requests.delete(url+"seniors/"+device_id, auth=(api_user, api_password))
 
 
-def custom_create_senior(data):
-	r = requests.post(api_url+"seniors/", headers=request_headers, auth=(api_user, api_password), data=data)
+def custom_create_senior(data, url):
+	r = requests.post(url+"seniors/", headers=request_headers, auth=(api_user, api_password), data=data)
 	if r.status_code == 201:
 		# print(r.json())
 		return True
@@ -73,4 +75,3 @@ def custom_create_senior(data):
 		return False
 
 
-api_handler = ApiHandler()
