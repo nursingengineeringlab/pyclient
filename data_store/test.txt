@@ -3,6 +3,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 F6965C58E969,SPO2
 >>>>>>> fix import url circle
@@ -517,3 +518,6 @@ F4B5F34C1FEE,RRI
 D6C33FD9370E,TEMP
 599C5E6C6C3D,TEMP
 >>>>>>> format update and parameterized url endpoint
+=======
+F6965C58E969,SPO2
+>>>>>>> fix import url circle

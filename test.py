@@ -4,6 +4,10 @@ import atexit
 import time
 from logger import Logger
 import senior
+<<<<<<< HEAD
+=======
+import apihandler
+>>>>>>> fix import url circle
 import math
 import asyncio
 import websockets
@@ -26,6 +30,7 @@ senior_queue = queue.Queue()
 UPDATE_DATA_TIMEOUT = 1
 base_url = ''
 port = ''
+api_url = ''
 senior_queue = queue.Queue()
 
 UPDATE_DATA_TIMEOUT = 450
@@ -39,7 +44,11 @@ def exit_handler():
     print("Deleting Seniors")
     for s in senior_queue.queue:
         # pass
+<<<<<<< HEAD
         senior.senior_manager.delete_senior(s, api_url)
+=======
+        senior.senior_manager.delete_senior(senior, api_url)
+>>>>>>> fix import url circle
     print("End")
 
 
@@ -73,18 +82,34 @@ class TestECG(Logger):
                 for s in senior_queue.queue:
                     if int(time.time()) - s.last_data_update_time > UPDATE_DATA_TIMEOUT:
                         new_rand_value = randint(60, 120)
+<<<<<<< HEAD
                         test_json["device_id"] = s.id
                         test_json["sequence_id"] = s.seq
                         test_json["value"] = new_rand_value
                         test_json["battery"] = 60
                         test_json["time"] = int(round(time.time() * 1000))
                         print(time.time())
+=======
+                        # senior.device.value = new_rand_value
+                        # data = senior.get_data()
+                        test_json = {
+                            "device_id": s.id,
+                            "sequence_id": s.seq,
+                            "time": int(round(time.time() * 1000)),
+                            "value": new_rand_value,
+                            "battery": 60,
+                        }
+>>>>>>> fix import url circle
                         print(json.dumps(test_json))
                         print(time.time())
                         await websocket.send(json.dumps(test_json))
                         s.last_data_update_time = int(time.time())
                         s.seq = s.seq + 1
+<<<<<<< HEAD
                         test_json["command"] = "update"
+=======
+
+>>>>>>> fix import url circle
 
 
 if __name__ == '__main__':
@@ -101,6 +126,12 @@ if __name__ == '__main__':
     port = str(args.port)
     websocket_url = "ws://" + base_url + ":" + port + "/"
     api_url =  "http://" + base_url + ":" + port + "/"
+<<<<<<< HEAD
+=======
+    print(api_url)
+    api_handler = apihandler.ApiHandler(api_url)
+
+>>>>>>> fix import url circle
 
     # print(websocket_url)
 
