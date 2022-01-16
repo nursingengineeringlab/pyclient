@@ -24,6 +24,11 @@ api_url = ''
 senior_queue = queue.Queue()
 
 UPDATE_DATA_TIMEOUT = 1
+base_url = ''
+port = ''
+senior_queue = queue.Queue()
+
+UPDATE_DATA_TIMEOUT = 450
 
 def current_milli_time():
     return round(time.time() * 1000)
