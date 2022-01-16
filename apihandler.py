@@ -3,11 +3,12 @@ import requests
 import queue
 import threading
 import json
+from test import base_url
+from test import port
 
 api_user = "test1"
 api_password = "test"
-#base_url = "http://127.0.0.1:8000/"
-base_url = "http://shiywang.asuscomm.com:30007/"
+api_url =  "http://" + base_url + ":" + port + "/"
 request_headers = {'Content-Type': 'application/json'}
 
 
@@ -22,7 +23,7 @@ class ApiHandler(threading.Thread):
 		self.__function_queue.put((function, args, kwargs))
 
 	def create_senior(self, data):
-		r = requests.post(base_url+"seniors/", headers=request_headers, auth=(api_user, api_password), data=data)
+		r = requests.post(api_url+"seniors/", headers=request_headers, auth=(api_user, api_password), data=data)
 		if r.status_code == 201:
 			return True
 		else:
@@ -30,12 +31,12 @@ class ApiHandler(threading.Thread):
 			return False
 
 	def delete_user(self, device_id):
-		r = requests.delete(base_url+"seniors/"+device_id, auth=(api_user, api_password))
+		r = requests.delete(api_url+"seniors/"+device_id, auth=(api_user, api_password))
 
 	def send_data(self, senior):
 		device_type = senior.device.type.name
 		data = senior.get_data()
-		url = base_url + "sensordata/" + device_type + '/'
+		url = api_url + "sensordata/" + device_type + '/'
 		r = requests.post(url, headers=request_headers, auth=(api_user, api_password), data=json.dumps(data))
 
 	def send_ping(self, senior):
@@ -43,7 +44,7 @@ class ApiHandler(threading.Thread):
 			"device_id": senior.id,
 			"battery": senior.get_battery(),
 		}
-		url = base_url + "ping/"
+		url = api_url + "ping/"
 		r = requests.post(url, headers=request_headers, auth=(api_user, api_password), data=json.dumps(data))
 
 	def run(self):
@@ -59,11 +60,11 @@ class ApiHandler(threading.Thread):
 
 # to be called from another thread on program exit
 def custom_senior_delete(device_id):
-	r = requests.delete(base_url+"seniors/"+device_id, auth=(api_user, api_password))
+	r = requests.delete(api_url+"seniors/"+device_id, auth=(api_user, api_password))
 
 
 def custom_create_senior(data):
-	r = requests.post(base_url+"seniors/", headers=request_headers, auth=(api_user, api_password), data=data)
+	r = requests.post(api_url+"seniors/", headers=request_headers, auth=(api_user, api_password), data=data)
 	if r.status_code == 201:
 		# print(r.json())
 		return True

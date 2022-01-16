@@ -3,7 +3,7 @@ import requests
 from apihandler import custom_senior_delete
 
 
-base_url = "http://127.0.0.1:8000/"
+base_url = "http://127.0.0.1:30007/"
 request_headers = {'Content-Type': 'application/json'}
 api_user = "test"
 api_password = "test"
@@ -21,8 +21,8 @@ def cleanup_user(device_id):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-	    print("Incomplete arguments")
-	    exit()
+        print("Incomplete arguments")
+        exit()
 
     input_str = sys.argv[1]
 

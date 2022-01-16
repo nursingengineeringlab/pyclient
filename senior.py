@@ -62,7 +62,7 @@ class SeniorManager(Logger):
                 if device_type == DeviceTypes.SPO2:
                     device = SPO2Device(device_id=device_id)
                 elif device_type == DeviceTypes.RR:
-                    device = RRDevice(device_id=device_id)
+                    device = RRIDevice(device_id=device_id)
                 elif device_type == DeviceTypes.TEMP:
                     device = TemperatureDevice(device_id=device_id)
 

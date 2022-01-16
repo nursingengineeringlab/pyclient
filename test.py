@@ -17,11 +17,11 @@ from random import randint
 
 #websocket_url = "ws://127.0.0.1:8000/"
 websocket_url = "ws://shiywang.asuscomm.com:30007/"
-
+base_url = ''
+port = ''
 senior_queue = queue.Queue()
 
-PING_TIMEOUT = 60
-UPDATE_DATA_TIMEOUT = 1
+UPDATE_DATA_TIMEOUT = 450
 
 def current_milli_time():
     return round(time.time() * 1000)
@@ -83,9 +83,17 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='args.')
     parser.add_argument('-n', '--num', type=int, default=1)
     parser.add_argument('-d', '--dele', default=True)
+    parser.add_argument('-u', '--url', type=str, default='127.0.0.1')
+    parser.add_argument('--port', type=int, default=30007)
 
     print("Number of cpu :", multiprocessing.cpu_count())
     args = parser.parse_args()
+    base_url = args.url
+    port = str(args.port)
+
+    websocket_url = "ws://" + base_url + ":" + port + "/"
+
+
     input_num = args.num
     if args.dele is True:
         try:
