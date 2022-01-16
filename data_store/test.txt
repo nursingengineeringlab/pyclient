@@ -4,6 +4,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 F6965C58E969,SPO2
 >>>>>>> fix import url circle
@@ -521,3 +522,6 @@ D6C33FD9370E,TEMP
 =======
 F6965C58E969,SPO2
 >>>>>>> fix import url circle
+=======
+AE71E1DE48DC,TEMP
+>>>>>>> some update

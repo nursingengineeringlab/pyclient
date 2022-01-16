@@ -33,7 +33,7 @@ port = ''
 api_url = ''
 senior_queue = queue.Queue()
 
-UPDATE_DATA_TIMEOUT = 450
+UPDATE_DATA_TIMEOUT = 1
 
 def current_milli_time():
     return round(time.time() * 1000)
@@ -45,10 +45,14 @@ def exit_handler():
     for s in senior_queue.queue:
         # pass
 <<<<<<< HEAD
+<<<<<<< HEAD
         senior.senior_manager.delete_senior(s, api_url)
 =======
         senior.senior_manager.delete_senior(senior, api_url)
 >>>>>>> fix import url circle
+=======
+        senior.senior_manager.delete_senior(s, api_url)
+>>>>>>> some update
     print("End")
 
 
@@ -127,11 +131,20 @@ if __name__ == '__main__':
     websocket_url = "ws://" + base_url + ":" + port + "/"
     api_url =  "http://" + base_url + ":" + port + "/"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     print(api_url)
     api_handler = apihandler.ApiHandler(api_url)
 
 >>>>>>> fix import url circle
+=======
+    # print(api_url)
+    api_handler = apihandler.ApiHandler(api_url)
+
+    # logger = logging.getLogger('websockets')
+    # logger.setLevel(logging.DEBUG)
+    # logger.addHandler(logging.StreamHandler())
+>>>>>>> some update
 
     # print(websocket_url)
 
