@@ -10,6 +10,7 @@ import asyncio
 import websockets
 import argparse
 import os
+import logging
 import multiprocessing
 from random import randint
 
@@ -23,7 +24,7 @@ port = ''
 api_url = ''
 senior_queue = queue.Queue()
 
-UPDATE_DATA_TIMEOUT = 450
+UPDATE_DATA_TIMEOUT = 1
 
 def current_milli_time():
     return round(time.time() * 1000)
@@ -32,9 +33,9 @@ def current_milli_time():
 # On program exit delete users from database
 def exit_handler():
     print("Deleting Seniors")
-    for senior in senior_queue.queue:
+    for s in senior_queue.queue:
         # pass
-        senior.senior_manager.delete_senior(senior, api_url)
+        senior.senior_manager.delete_senior(s, api_url)
     print("End")
 
 
@@ -59,6 +60,7 @@ class TestECG(Logger):
 
     async def run(self):
         url = websocket_url + 'ws/sensor/RR'
+        # https://websockets.readthedocs.io/en/stable/howto/faq.html?highlight=ping_interval#how-do-i-keep-idle-connections-open
         async with websockets.connect(url) as websocket:
             while True:
                 for s in senior_queue.queue:
@@ -94,9 +96,12 @@ if __name__ == '__main__':
     port = str(args.port)
     websocket_url = "ws://" + base_url + ":" + port + "/"
     api_url =  "http://" + base_url + ":" + port + "/"
-    print(api_url)
+    # print(api_url)
     api_handler = apihandler.ApiHandler(api_url)
 
+    # logger = logging.getLogger('websockets')
+    # logger.setLevel(logging.DEBUG)
+    # logger.addHandler(logging.StreamHandler())
 
 
     input_num = args.num
