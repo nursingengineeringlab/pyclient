@@ -9,6 +9,7 @@ api_password = "test"
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 api_url =  "http://" + base_url + ":" + port + "/"
 =======
 =======
@@ -73,6 +74,11 @@ request_headers = {'Content-Type': 'application/json', 'Authorization': 'Token 7
 >>>>>>> remove apihander class
 api_url = ''
 
+=======
+request_headers = {'Content-Type': 'application/json', 'Authorization': 'Token 79bfff7c4e78a575af2226fde003609680112e85'}
+api_url = ''
+
+>>>>>>> remove apihander class
 # to be called from another thread on program exit
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -96,8 +102,12 @@ def custom_senior_delete(device_id, url):
 
 
 def custom_create_senior(data, url):
+<<<<<<< HEAD
 	r = requests.post(url+"seniors/", headers=request_headers, auth=(api_user, api_password), data=data)
 >>>>>>> fix import url circle
+=======
+	r = requests.post(url+"seniors/", headers=request_headers, data=data)
+>>>>>>> remove apihander class
 	if r.status_code == 201:
 		print(r.json())
 		return True

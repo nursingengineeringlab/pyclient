@@ -5,9 +5,12 @@ import time
 from logger import Logger
 import senior
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import apihandler
 >>>>>>> fix import url circle
+=======
+>>>>>>> remove apihander class
 import math
 import asyncio
 import websockets
@@ -87,12 +90,16 @@ class TestECG(Logger):
                     if int(time.time()) - s.last_data_update_time > UPDATE_DATA_TIMEOUT:
                         new_rand_value = randint(60, 120)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> remove apihander class
                         test_json["device_id"] = s.id
                         test_json["sequence_id"] = s.seq
                         test_json["value"] = new_rand_value
                         test_json["battery"] = 60
                         test_json["time"] = int(round(time.time() * 1000))
                         print(time.time())
+<<<<<<< HEAD
 =======
                         # senior.device.value = new_rand_value
                         # data = senior.get_data()
@@ -104,16 +111,22 @@ class TestECG(Logger):
                             "battery": 60,
                         }
 >>>>>>> fix import url circle
+=======
+>>>>>>> remove apihander class
                         print(json.dumps(test_json))
                         print(time.time())
                         await websocket.send(json.dumps(test_json))
                         s.last_data_update_time = int(time.time())
                         s.seq = s.seq + 1
 <<<<<<< HEAD
+<<<<<<< HEAD
                         test_json["command"] = "update"
 =======
 
 >>>>>>> fix import url circle
+=======
+                        test_json["command"] = "update"
+>>>>>>> remove apihander class
 
 
 if __name__ == '__main__':
@@ -132,6 +145,7 @@ if __name__ == '__main__':
     api_url =  "http://" + base_url + ":" + port + "/"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     print(api_url)
     api_handler = apihandler.ApiHandler(api_url)
@@ -145,6 +159,8 @@ if __name__ == '__main__':
     # logger.setLevel(logging.DEBUG)
     # logger.addHandler(logging.StreamHandler())
 >>>>>>> some update
+=======
+>>>>>>> remove apihander class
 
     # print(websocket_url)
 
