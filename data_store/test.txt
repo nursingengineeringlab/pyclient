@@ -1,8 +1,12 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 F6965C58E969,SPO2
 >>>>>>> fix import url circle
 =======
 AE71E1DE48DC,TEMP
 >>>>>>> some update
+=======
+C4F1B7502460,TEMP
+>>>>>>> remove apihander class

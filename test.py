@@ -4,7 +4,6 @@ import atexit
 import time
 from logger import Logger
 import senior
-import apihandler
 import math
 import asyncio
 import websockets
@@ -62,24 +61,25 @@ class TestECG(Logger):
         url = websocket_url + 'ws/sensor/RR'
         # https://websockets.readthedocs.io/en/stable/howto/faq.html?highlight=ping_interval#how-do-i-keep-idle-connections-open
         async with websockets.connect(url) as websocket:
+            test_json = {
+                "command" : "new",
+            }
             while True:
                 for s in senior_queue.queue:
                     if int(time.time()) - s.last_data_update_time > UPDATE_DATA_TIMEOUT:
                         new_rand_value = randint(60, 120)
-                        # senior.device.value = new_rand_value
-                        # data = senior.get_data()
-                        test_json = {
-                            "device_id": s.id,
-                            "sequence_id": s.seq,
-                            "time": int(round(time.time() * 1000)),
-                            "value": new_rand_value,
-                            "battery": 60,
-                        }
+                        test_json["device_id"] = s.id
+                        test_json["sequence_id"] = s.seq
+                        test_json["value"] = new_rand_value
+                        test_json["battery"] = 60
+                        test_json["time"] = int(round(time.time() * 1000))
+                        print(time.time())
                         print(json.dumps(test_json))
+                        print(time.time())
                         await websocket.send(json.dumps(test_json))
                         s.last_data_update_time = int(time.time())
                         s.seq = s.seq + 1
-
+                        test_json["command"] = "update"
 
 
 if __name__ == '__main__':
@@ -96,12 +96,6 @@ if __name__ == '__main__':
     port = str(args.port)
     websocket_url = "ws://" + base_url + ":" + port + "/"
     api_url =  "http://" + base_url + ":" + port + "/"
-    # print(api_url)
-    api_handler = apihandler.ApiHandler(api_url)
-
-    # logger = logging.getLogger('websockets')
-    # logger.setLevel(logging.DEBUG)
-    # logger.addHandler(logging.StreamHandler())
 
 
     input_num = args.num
