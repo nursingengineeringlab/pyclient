@@ -1,4 +1,3 @@
-import os
 from bluepy import btle 
 from binascii import hexlify
 import time, uuid, json, requests
@@ -51,8 +50,8 @@ def ws_send_data(command, device_id, value, device_type):
         "battery" : 60,
         "sequence_id": 1,
     }
-    
-    ws.send(data)
+    json_string = json.dumps(data)
+    ws.send(json_string)
 
 class ScanDelegate(btle.DefaultDelegate):
     def __init__(self):
