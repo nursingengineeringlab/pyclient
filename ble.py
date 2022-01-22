@@ -28,16 +28,6 @@ test_device_id      = "2A648758F3D3"
 test_device_type    = "RR"
 ws = None
 
-# def send_ping():
-#     data = {
-#         "device_id": test_device_id,
-#         "battery": 50,
-#     }
-#     url = base_url + "ping/"
-#     r = requests.post(url, headers=request_headers, data=json.dumps(data))
-#     #print("in function send_ping")
-#     #print(r)
-
         
 def api_send_data(device_id, value, device_type):
     data = {
@@ -139,8 +129,10 @@ def device_handler(devices, websocket):
 if __name__ == "__main__":
     log.debug("Starting WebSocket")
     ws = websocket.WebSocket()
-    ws.connect("ws://echo.websocket.org")
 
+    ws_url = "ws://" + base_url + "/ws/sensor/RR"
+
+    ws.connect(ws_url)
 
     log.debug("Starting BLE Receiver")
     scanner = btle.Scanner().withDelegate(ScanDelegate())
