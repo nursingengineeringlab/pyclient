@@ -97,6 +97,7 @@ if __name__ == '__main__':
     websocket_url = "ws://" + base_url + ":" + port + "/"
     api_url =  "http://" + base_url + ":" + port + "/"
 
+    # print(websocket_url)
 
     input_num = args.num
     if args.dele is True:
