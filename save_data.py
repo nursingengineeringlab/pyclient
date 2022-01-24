@@ -1,6 +1,6 @@
+from multiprocessing.spawn import import_main_path
 import random
-
-filename = "./data_store/test.txt"
+from conf import filename
 
 
 class FileManager:

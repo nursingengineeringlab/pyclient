@@ -22,22 +22,12 @@ class DeviceType(str, Enum):
 
 device_list = []
 log = Logger("BLE")
-request_headers = {'Content-Type': 'application/json', 'Authorization': 'Token 37ea60e235a19c456e254e6d71a63284fa8b9945'}
 
 base_ip = "172.24.41.203:8000/"
 test_device_id      = "F43053011ACF"
 test_device_type    = "RRI"
 ws = None
 
-        
-def api_send_data(device_id, value, device_type):
-    data = {
-        "device_id": device_id,
-        "time": int(time.time()),
-        "value" : value
-    }
-    url = base_ip + "sensordata/" + device_type + '/'
-    r = requests.post(url, headers=request_headers, data=json.dumps(data))
 
 def ws_send_data(command, device_id, value, device_type):
     data = {
@@ -94,7 +84,7 @@ class DeviceDelegate(btle.DefaultDelegate):
             print("Received data %s " % hexlify(data))
 
 
-def device_handler(devices, websocket):
+def device_handler(devices):
     for dev in devices:
         try:
             dev_data = dev.getScanData()
@@ -139,11 +129,9 @@ if __name__ == "__main__":
 
     log.debug("Starting BLE Receiver")
     scanner = btle.Scanner().withDelegate(ScanDelegate())
-    # try:
+
     while True:
         devices = scanner.scan(5.0, passive=True)
         handler = threading.Thread(target=device_handler, args=(devices, ws), daemon=True)
         handler.start()
         time.sleep(2)
-    # except Exception as e:
-        # pass
