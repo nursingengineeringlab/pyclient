@@ -62,7 +62,7 @@ class DeviceDelegate(btle.DefaultDelegate):
         # ... initialise here
 
     def handleNotification(self, cHandle, data):
-        #print(len(data))
+        print(f"packet size: {len(data)}")
         parse_measure_data = lambda data : ((data[17] << 7))  | (data[18] & 0x7F)
         if data[16] == 0xA7:
             val = parse_measure_data(data)
@@ -76,12 +76,12 @@ class DeviceDelegate(btle.DefaultDelegate):
             print("No sending temp data now")
             # ws_send_data("update", test_device_id, val, DeviceType.TEMP)
         elif data[16] == 0x92:
-            # val = parse_measure_data(data)
-            # print(f"Heart Rate: {val}")
+            val = parse_measure_data(data)
+            print(f"Heart Rate: {val}")
             print("Heart Rate: No support API yet send to server")
         elif data[16] == 0x9D:
-            # val = parse_measure_data(data)
-            # print(f"Battery check: {val}")
+            val = parse_measure_data(data)
+            print(f"Battery check: {val}")
             print("Battery check: No support API yet send to server")
         else:
             pass
