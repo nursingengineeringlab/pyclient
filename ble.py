@@ -54,7 +54,8 @@ class ScanDelegate(btle.DefaultDelegate):
             #TODO: this line will make system crash
             # ws_send_data("new", test_device_id, 0, DeviceType.RRI)
         elif isNewData:
-            print("Received new data from", dev.addr)
+            # print("Received new data from", dev.addr)
+            print("Received new data from")
 
 class DeviceDelegate(btle.DefaultDelegate):
     def __init__(self):
