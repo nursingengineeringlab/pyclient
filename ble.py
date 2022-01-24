@@ -25,8 +25,6 @@ log = Logger("BLE")
 request_headers = {'Content-Type': 'application/json', 'Authorization': 'Token 79bfff7c4e78a575af2226fde003609680112e85'}
 
 base_ip = "172.24.41.203:8000/"
-#test_device_id      = "2A648758F3D3"
-#test_device_id      = "FCD7EA7742CC"
 test_device_id      = "F43053011ACF"
 test_device_type    = "RRI"
 ws = None
@@ -118,7 +116,6 @@ def device_handler(devices, websocket):
                 ch = svc.getCharacteristics(NOTIFY_CHR_UUID)[0]
                 periph.writeCharacteristic(ch.getHandle()+1, b"\x01\x00", True)
                 
-                #     send_ping()
                 while True:
                     if periph.waitForNotifications(1.0):
                         continue

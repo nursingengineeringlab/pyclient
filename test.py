@@ -4,38 +4,21 @@ import atexit
 import time
 from logger import Logger
 import senior
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-import apihandler
->>>>>>> fix import url circle
-=======
->>>>>>> remove apihander class
 import math
 import asyncio
 import websockets
 import argparse
 import os
-import logging
 import multiprocessing
 from random import randint
 
 # seed random number generator
 # generate some integers
 
-#websocket_url = "ws://127.0.0.1:8000/"
-websocket_url = "ws://shiywang.asuscomm.com:30007/"
 base_url = ''
 port = ''
 api_url = ''
 senior_queue = queue.Queue()
-
-UPDATE_DATA_TIMEOUT = 1
-base_url = ''
-port = ''
-api_url = ''
-senior_queue = queue.Queue()
-
 UPDATE_DATA_TIMEOUT = 1
 
 def current_milli_time():
@@ -46,16 +29,7 @@ def current_milli_time():
 def exit_handler():
     print("Deleting Seniors")
     for s in senior_queue.queue:
-        # pass
-<<<<<<< HEAD
-<<<<<<< HEAD
         senior.senior_manager.delete_senior(s, api_url)
-=======
-        senior.senior_manager.delete_senior(senior, api_url)
->>>>>>> fix import url circle
-=======
-        senior.senior_manager.delete_senior(s, api_url)
->>>>>>> some update
     print("End")
 
 
@@ -80,7 +54,6 @@ class TestECG(Logger):
 
     async def run(self):
         url = websocket_url + 'ws/sensor/RR'
-        # https://websockets.readthedocs.io/en/stable/howto/faq.html?highlight=ping_interval#how-do-i-keep-idle-connections-open
         async with websockets.connect(url) as websocket:
             test_json = {
                 "command" : "new",
@@ -89,44 +62,18 @@ class TestECG(Logger):
                 for s in senior_queue.queue:
                     if int(time.time()) - s.last_data_update_time > UPDATE_DATA_TIMEOUT:
                         new_rand_value = randint(60, 120)
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> remove apihander class
                         test_json["device_id"] = s.id
                         test_json["sequence_id"] = s.seq
                         test_json["value"] = new_rand_value
                         test_json["battery"] = 60
                         test_json["time"] = int(round(time.time() * 1000))
                         print(time.time())
-<<<<<<< HEAD
-=======
-                        # senior.device.value = new_rand_value
-                        # data = senior.get_data()
-                        test_json = {
-                            "device_id": s.id,
-                            "sequence_id": s.seq,
-                            "time": int(round(time.time() * 1000)),
-                            "value": new_rand_value,
-                            "battery": 60,
-                        }
->>>>>>> fix import url circle
-=======
->>>>>>> remove apihander class
                         print(json.dumps(test_json))
                         print(time.time())
                         await websocket.send(json.dumps(test_json))
                         s.last_data_update_time = int(time.time())
                         s.seq = s.seq + 1
-<<<<<<< HEAD
-<<<<<<< HEAD
                         test_json["command"] = "update"
-=======
-
->>>>>>> fix import url circle
-=======
-                        test_json["command"] = "update"
->>>>>>> remove apihander class
 
 
 if __name__ == '__main__':
@@ -143,25 +90,10 @@ if __name__ == '__main__':
     port = str(args.port)
     websocket_url = "ws://" + base_url + ":" + port + "/"
     api_url =  "http://" + base_url + ":" + port + "/"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
     print(api_url)
-    api_handler = apihandler.ApiHandler(api_url)
-
->>>>>>> fix import url circle
-=======
-    # print(api_url)
-    api_handler = apihandler.ApiHandler(api_url)
-
     # logger = logging.getLogger('websockets')
     # logger.setLevel(logging.DEBUG)
     # logger.addHandler(logging.StreamHandler())
->>>>>>> some update
-=======
->>>>>>> remove apihander class
-
     # print(websocket_url)
 
     input_num = args.num

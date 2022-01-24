@@ -30,13 +30,4 @@ if __name__ == '__main__':
     if input_str == 'all':
         cleanup_users()
     else:
-<<<<<<< HEAD
-<<<<<<< HEAD
         custom_senior_delete(input_str, base_url)
-=======
-        custom_senior_delete(input_str)
->>>>>>> format update and parameterized url endpoint
-=======
-        custom_senior_delete(input_str, base_url)
->>>>>>> fix import url circle
-    
