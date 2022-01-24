@@ -22,7 +22,7 @@ class DeviceType(str, Enum):
 
 device_list = []
 log = Logger("BLE")
-request_headers = {'Content-Type': 'application/json', 'Authorization': 'Token 79bfff7c4e78a575af2226fde003609680112e85'}
+request_headers = {'Content-Type': 'application/json', 'Authorization': 'Token 37ea60e235a19c456e254e6d71a63284fa8b9945'}
 
 base_ip = "172.24.41.203:8000/"
 test_device_id      = "F43053011ACF"
