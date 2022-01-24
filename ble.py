@@ -73,7 +73,8 @@ class DeviceDelegate(btle.DefaultDelegate):
         elif data[16] == 0xAB:
             val = parse_measure_data(data)
             print(f"Temperature: {val}")
-            ws_send_data("update", test_device_id, val, DeviceType.TEMP)
+            print("No sending temp data now")
+            # ws_send_data("update", test_device_id, val, DeviceType.TEMP)
         elif data[16] == 0x92:
             # val = parse_measure_data(data)
             # print(f"Heart Rate: {val}")
