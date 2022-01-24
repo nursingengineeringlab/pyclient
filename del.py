@@ -31,4 +31,3 @@ if __name__ == '__main__':
         cleanup_users()
     else:
         custom_senior_delete(input_str, base_url)
-    

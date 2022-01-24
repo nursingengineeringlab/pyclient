@@ -9,20 +9,16 @@ import asyncio
 import websockets
 import argparse
 import os
-import logging
 import multiprocessing
 from random import randint
 
 # seed random number generator
 # generate some integers
 
-#websocket_url = "ws://127.0.0.1:8000/"
-websocket_url = "ws://shiywang.asuscomm.com:30007/"
 base_url = ''
 port = ''
 api_url = ''
 senior_queue = queue.Queue()
-
 UPDATE_DATA_TIMEOUT = 1
 
 def current_milli_time():
@@ -33,7 +29,6 @@ def current_milli_time():
 def exit_handler():
     print("Deleting Seniors")
     for s in senior_queue.queue:
-        # pass
         senior.senior_manager.delete_senior(s, api_url)
     print("End")
 
@@ -59,7 +54,6 @@ class TestECG(Logger):
 
     async def run(self):
         url = websocket_url + 'ws/sensor/RR'
-        # https://websockets.readthedocs.io/en/stable/howto/faq.html?highlight=ping_interval#how-do-i-keep-idle-connections-open
         async with websockets.connect(url) as websocket:
             test_json = {
                 "command" : "new",
@@ -74,7 +68,7 @@ class TestECG(Logger):
                         test_json["battery"] = 60
                         test_json["time"] = int(round(time.time() * 1000))
                         print(time.time())
-                        print(json.dumps(test_json))
+                        print(len(json.dumps(test_json)))
                         print(time.time())
                         await websocket.send(json.dumps(test_json))
                         s.last_data_update_time = int(time.time())
@@ -88,7 +82,7 @@ if __name__ == '__main__':
     parser.add_argument('-n', '--num', type=int, default=1)
     parser.add_argument('-d', '--dele', default=True)
     parser.add_argument('-u', '--url', type=str, default='127.0.0.1')
-    parser.add_argument('--port', type=int, default=30007)
+    parser.add_argument('--port', type=int, default=8000)
 
     print("Number of cpu :", multiprocessing.cpu_count())
     args = parser.parse_args()
@@ -96,7 +90,10 @@ if __name__ == '__main__':
     port = str(args.port)
     websocket_url = "ws://" + base_url + ":" + port + "/"
     api_url =  "http://" + base_url + ":" + port + "/"
-
+    print(api_url)
+    # logger = logging.getLogger('websockets')
+    # logger.setLevel(logging.DEBUG)
+    # logger.addHandler(logging.StreamHandler())
     # print(websocket_url)
 
     input_num = args.num
