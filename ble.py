@@ -1,4 +1,3 @@
-import os
 from bluepy import btle 
 from binascii import hexlify
 import time, uuid, json
@@ -51,7 +50,7 @@ class ScanDelegate(btle.DefaultDelegate):
         if isNewDev:
             pass
             # print("Discovered device", dev.addr)
-            #TODO: this line will make system crash
+            # TODO: this line will make system crash
             # ws_send_data("new", test_device_id, 0, DeviceType.RRI)
         elif isNewData:
             # print("Received new data from", dev.addr)
@@ -63,30 +62,33 @@ class DeviceDelegate(btle.DefaultDelegate):
         # ... initialise here
 
     def handleNotification(self, cHandle, data):
-        print(f"packet size: {len(data)}")
-        parse_measure_data = lambda data : ((data[17] << 7))  | (data[18] & 0x7F)
-        if data[16] == 0xA7:
-            val = parse_measure_data(data)
-            print(f"RRI: {val}")
-            #print(f'High: {data[17]}')
-            #print(f'Low: {data[18]}')
-            ws_send_data("update", test_device_id, val, DeviceType.RRI)
-        elif data[16] == 0xAB:
-            val = parse_measure_data(data)
-            print(f"Temperature: {val}")
-            print("No sending temp data now")
-            # ws_send_data("update", test_device_id, val, DeviceType.TEMP)
-        elif data[16] == 0x92:
-            val = parse_measure_data(data)
-            print(f"Heart Rate: {val}")
-            print("Heart Rate: No support API yet send to server")
-        elif data[16] == 0x9D:
-            val = parse_measure_data(data)
-            print(f"Battery check: {val}")
-            print("Battery check: No support API yet send to server")
-        else:
-            pass
-            # print("Received data %s " % hexlify(data))
+        try:
+            print(f"packet size: {len(data)}")
+            parse_measure_data = lambda data : ((data[17] << 7))  | (data[18] & 0x7F)
+            if data[16] == 0xA7:
+                val = parse_measure_data(data)
+                print(f"RRI: {val}")
+                #print(f'High: {data[17]}')
+                #print(f'Low: {data[18]}')
+                ws_send_data("update", test_device_id, val, DeviceType.RRI)
+            elif data[16] == 0xAB:
+                val = parse_measure_data(data)
+                print(f"Temperature: {val}")
+                print("No sending temp data now")
+                # ws_send_data("update", test_device_id, val, DeviceType.TEMP)
+            elif data[16] == 0x92:
+                val = parse_measure_data(data)
+                print(f"Heart Rate: {val}")
+                print("Heart Rate: No support API yet send to server")
+            elif data[16] == 0x9D:
+                val = parse_measure_data(data)
+                print(f"Battery check: {val}")
+                print("Battery check: No support API yet send to server")
+            else:
+                pass
+                # print("Received data %s " % hexlify(data))
+        except IndexError:
+            print("Index Error")
 
 
 def device_handler(devices):
@@ -98,6 +100,7 @@ def device_handler(devices):
                 log.debug(dev_data)
                 return
 
+            print("dev data ", len(dev_data[1]))
             dev_name = dev_data[1][2] or None
             if dev_name == TARGET_NAME:
                 log.debug("Found Mezoo Device")
