@@ -50,7 +50,8 @@ class ScanDelegate(btle.DefaultDelegate):
         # pass
         if isNewDev:
             print("Discovered device", dev.addr)
-            ws_send_data("new", test_device_id, 0, DeviceType.RRI)
+            #TODO: this line will make system crash
+            # ws_send_data("new", test_device_id, 0, DeviceType.RRI)
         elif isNewData:
             print("Received new data from", dev.addr)
 
@@ -132,6 +133,6 @@ if __name__ == "__main__":
 
     while True:
         devices = scanner.scan(5.0, passive=True)
-        handler = threading.Thread(target=device_handler, args=(devices, ws), daemon=True)
+        handler = threading.Thread(target=device_handler, args=(devices,), daemon=True)
         handler.start()
         time.sleep(2)
