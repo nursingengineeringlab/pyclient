@@ -95,12 +95,12 @@ def device_handler(devices):
     for dev in devices:
         try:
             dev_data = dev.getScanData()
-            if len(dev_data) < 2 and len(dev_data[1]) < 3:
-                print("dev_data is too short, not Mezoo device")
-                log.debug(dev_data)
-                return
+            # if len(dev_data) < 2 or len(dev_data[1]) < 3:
+            #     print("dev_data is too short, not Mezoo device")
+            #     log.debug(dev_data)
+            #     return
 
-            print("dev data ", len(dev_data[1]))
+            # print("dev data ", len(dev_data[1]))
             dev_name = dev_data[1][2] or None
             if dev_name == TARGET_NAME:
                 log.debug("Found Mezoo Device")
