@@ -68,7 +68,7 @@ class TestECG(Logger):
                         test_json["battery"] = 60
                         test_json["time"] = int(round(time.time() * 1000))
                         print(time.time())
-                        print(json.dumps(test_json))
+                        print(len(json.dumps(test_json)))
                         print(time.time())
                         await websocket.send(json.dumps(test_json))
                         s.last_data_update_time = int(time.time())
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     parser.add_argument('-n', '--num', type=int, default=1)
     parser.add_argument('-d', '--dele', default=True)
     parser.add_argument('-u', '--url', type=str, default='127.0.0.1')
-    parser.add_argument('--port', type=int, default=30007)
+    parser.add_argument('--port', type=int, default=8000)
 
     print("Number of cpu :", multiprocessing.cpu_count())
     args = parser.parse_args()
