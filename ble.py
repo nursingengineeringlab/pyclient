@@ -83,7 +83,8 @@ class DeviceDelegate(btle.DefaultDelegate):
             # print(f"Battery check: {val}")
             print("Battery check: No support API yet send to server")
         else:
-            print("Received data %s " % hexlify(data))
+            pass
+            # print("Received data %s " % hexlify(data))
 
 
 def device_handler(devices):
