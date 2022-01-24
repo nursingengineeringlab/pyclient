@@ -1,7 +1,6 @@
 import requests
+from conf import request_headers
 
-
-request_headers = {'Content-Type': 'application/json', 'Authorization': 'Token 79bfff7c4e78a575af2226fde003609680112e85'}
 
 # to be called from another thread on program exit
 def custom_senior_delete(device_id, url):

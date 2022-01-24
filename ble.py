@@ -1,7 +1,7 @@
 import os
 from bluepy import btle 
 from binascii import hexlify
-import time, uuid, json, requests
+import time, uuid, json
 from logger import Logger
 from enum import Enum
 import threading
@@ -49,7 +49,8 @@ class ScanDelegate(btle.DefaultDelegate):
     def handleDiscovery(self, dev, isNewDev, isNewData):
         # pass
         if isNewDev:
-            print("Discovered device", dev.addr)
+            pass
+            # print("Discovered device", dev.addr)
             #TODO: this line will make system crash
             # ws_send_data("new", test_device_id, 0, DeviceType.RRI)
         elif isNewData:
