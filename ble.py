@@ -1,5 +1,4 @@
-import os
-from bluepy import btle 
+from bluepy import btle
 from binascii import hexlify
 import time, uuid, json, requests
 from logger import Logger
@@ -64,26 +63,24 @@ class ScanDelegate(btle.DefaultDelegate):
             # print("Received new data from", dev.addr)
 
 class DeviceDelegate(btle.DefaultDelegate):
-    def __init__(self):
+    def __init__(self, mac_address):
         btle.DefaultDelegate.__init__(self)
+        self.dev_addr = mac_address
         # ... initialise here
 
     def handleNotification(self, cHandle, data):
-        #print(len(data))
-        # print("----------------------------\n")
-        # print(cHandle)
-        # print("----------------------------\n")
+        print(self.name)
         parse_measure_data = lambda data : ((data[17] << 7))  | (data[18] & 0x7F)
         if data[16] == 0xA7:
             val = parse_measure_data(data)
             # print(f"RRI: {val}")
             #print(f'High: {data[17]}')
             #print(f'Low: {data[18]}')
-            ws_send_data("update", test_device_id, val, DeviceType.RRI)
+            ws_send_data("update", self.dev_addr, val, DeviceType.RRI)
         elif data[16] == 0xAB:
             val = parse_measure_data(data)
             # print(f"Temperature: {val}")
-            ws_send_data("update", test_device_id, val, DeviceType.TEMP)
+            ws_send_data("update", self.dev_addr, val, DeviceType.TEMP)
         elif data[16] == 0x92:
             pass
             # val = parse_measure_data(data)
@@ -111,11 +108,9 @@ def device_handler(devices, websocket):
             dev_name = dev_data[1][2] or None
             # print("Another name :", )
             if dev_name == TARGET_NAME:
-                log.debug(f"Found Mezoo Device: {dev_name}")
-                log.debug(f"Connecting to: {dev.addr}")
-            
+                log.debug(f"Found Mezoo Device Mac Address: {dev.addr}")
                 periph = btle.Peripheral(dev, "random")     # supply scan entry as arg
-                periph.setDelegate(DeviceDelegate())
+                periph.setDelegate(DeviceDelegate(dev.addr))
 
                 # Setup to turn notifications on
                 svc = periph.getServiceByUUID(SERVICE_UUID)
