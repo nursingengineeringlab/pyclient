@@ -14,7 +14,7 @@ WRITE_CHR_UUID  =  uuid.UUID('6E400002-B5A3-F393-E0A9-E50E24DCCA9E') # never use
 NOTIFY_CHR_UUID =  uuid.UUID('6E400003-B5A3-F393-E0A9-E50E24DCCA9E')
 TARGET_NAME     =  'MZB24C20R(A)'
 
-class DeviceType(str, Enum):
+class DataType(str, Enum):
     RRI = 'RRI'
     TEMP = 'TEMP'
     SPO2 = 'SPO2'
@@ -38,13 +38,13 @@ def api_send_data(device_id, value, device_type):
     url = base_url + "sensordata/" + device_type + '/'
     r = requests.post(url, headers=request_headers, data=json.dumps(data))
 
-def ws_send_data(command, device_id, value, device_type):
+def ws_send_data(command, device_id, value, data_type):
     data = {
         "command": command,
         "device_id": device_id,
         "time": int(time.time()),
         "value" : value,
-        "device_type": device_type,
+        "data_type": data_type,
         "battery" : 60,
         "sequence_id": 1,
     }
@@ -72,18 +72,17 @@ class DeviceDelegate(btle.DefaultDelegate):
         # ... initialise here
 
     def handleNotification(self, cHandle, data):
-        # print(self.dev_addr)
         parse_measure_data = lambda data : ((data[17] << 7))  | (data[18] & 0x7F)
         if data[16] == 0xA7:
             val = parse_measure_data(data)
             # print(f"RRI: {val}")
             #print(f'High: {data[17]}')
             #print(f'Low: {data[18]}')
-            ws_send_data("update", self.dev_name, val, DeviceType.RRI)
+            ws_send_data("update", self.dev_name, val, DataType.RRI)
         elif data[16] == 0xAB:
             val = parse_measure_data(data)
             # print(f"Temperature: {val}")
-            # ws_send_data("update", self.dev_name, val, DeviceType.TEMP)
+            ws_send_data("update", self.dev_name, val, DataType.TEMP)
         elif data[16] == 0x92:
             pass
             # val = parse_measure_data(data)
