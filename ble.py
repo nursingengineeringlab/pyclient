@@ -56,10 +56,12 @@ class ScanDelegate(btle.DefaultDelegate):
     def handleDiscovery(self, dev, isNewDev, isNewData):
         # pass
         if isNewDev:
-            print("Discovered device", dev.addr)
-            ws_send_data("new", test_device_id, 0, DeviceType.RRI)
+            pass
+            # print("Discovered device", dev.addr)
+            # ws_send_data("new", test_device_id, 0, DeviceType.RRI)
         elif isNewData:
-            print("Received new data from", dev.addr)
+            pass
+            # print("Received new data from", dev.addr)
 
 class DeviceDelegate(btle.DefaultDelegate):
     def __init__(self):
@@ -104,9 +106,9 @@ def device_handler(devices, websocket):
                 return
 
             dev_name = dev_data[1][2] or None
-            print("Another name :", dev_name)
+            # print("Another name :", )
             if dev_name == TARGET_NAME:
-                log.debug("Found Mezoo Device")
+                log.debug("Found Mezoo Device", dev_name)
                 log.debug(f"Connecting to: {dev.addr}")
             
                 periph = btle.Peripheral(dev, "random")     # supply scan entry as arg
