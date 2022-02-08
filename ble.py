@@ -26,8 +26,6 @@ log = Logger("BLE")
 ws = None
 
 def mac_address_to_name(mac):
-    print(type(mac))
-    print(mac)
     return mac.replace(':', '').upper()
 
 
@@ -85,7 +83,7 @@ class DeviceDelegate(btle.DefaultDelegate):
         elif data[16] == 0xAB:
             val = parse_measure_data(data)
             # print(f"Temperature: {val}")
-            ws_send_data("update", self.dev_name, val, DeviceType.TEMP)
+            # ws_send_data("update", self.dev_name, val, DeviceType.TEMP)
         elif data[16] == 0x92:
             pass
             # val = parse_measure_data(data)
