@@ -150,7 +150,7 @@ if __name__ == "__main__":
     # try:
     while True:
         devices = scanner.scan(5.0, passive=True)
-        handler = threading.Thread(target=device_handler, args=(devices), daemon=True)
+        handler = threading.Thread(target=device_handler, args=(devices,), daemon=True)
         handler.start()
         time.sleep(2)
     # except Exception as e:
