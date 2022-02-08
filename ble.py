@@ -5,7 +5,7 @@ from logger import Logger
 from enum import Enum
 import threading
 import websocket
-from config import request_headers, test_device_id, ws_url, base_url
+from config import request_headers, ws_url, base_url
 
 # Definitions   
 BASE_UUID       =  uuid.UUID('6E400000-B5A3-F393-E0A9-E50E24DCCA9E') # never used
@@ -25,7 +25,12 @@ log = Logger("BLE")
 
 ws = None
 
-        
+def mac_address_to_name(mac):
+    print(type(mac))
+    print(mac)
+    return mac.replace(':', '').upper()
+
+
 def api_send_data(device_id, value, device_type):
     data = {
         "device_id": device_id,
@@ -65,22 +70,22 @@ class ScanDelegate(btle.DefaultDelegate):
 class DeviceDelegate(btle.DefaultDelegate):
     def __init__(self, mac_address):
         btle.DefaultDelegate.__init__(self)
-        self.dev_addr = mac_address
+        self.dev_name = mac_address_to_name(mac_address)
         # ... initialise here
 
     def handleNotification(self, cHandle, data):
-        print(self.name)
+        # print(self.dev_addr)
         parse_measure_data = lambda data : ((data[17] << 7))  | (data[18] & 0x7F)
         if data[16] == 0xA7:
             val = parse_measure_data(data)
             # print(f"RRI: {val}")
             #print(f'High: {data[17]}')
             #print(f'Low: {data[18]}')
-            ws_send_data("update", self.dev_addr, val, DeviceType.RRI)
+            ws_send_data("update", self.dev_name, val, DeviceType.RRI)
         elif data[16] == 0xAB:
             val = parse_measure_data(data)
             # print(f"Temperature: {val}")
-            ws_send_data("update", self.dev_addr, val, DeviceType.TEMP)
+            ws_send_data("update", self.dev_name, val, DeviceType.TEMP)
         elif data[16] == 0x92:
             pass
             # val = parse_measure_data(data)
