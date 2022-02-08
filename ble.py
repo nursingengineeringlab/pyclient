@@ -97,10 +97,11 @@ def device_handler(devices, websocket):
             dev_data = dev.getScanData()
             if len(dev_data) < 2 and len(dev_data[1]) < 3:
                 print("dev_data is too short, not Mezoo device")
-                log.debug(dev_data)
+                # log.debug(dev_data)
                 return
 
             dev_name = dev_data[1][2] or None
+            print("Another name :", dev_name)
             if dev_name == TARGET_NAME:
                 log.debug("Found Mezoo Device")
                 log.debug(f"Connecting to: {dev.addr}")
