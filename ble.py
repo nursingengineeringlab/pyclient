@@ -68,6 +68,9 @@ class DeviceDelegate(btle.DefaultDelegate):
 
     def handleNotification(self, cHandle, data):
         #print(len(data))
+        print("----------------------------\n")
+        print(cHandle)
+        print("----------------------------\n")
         parse_measure_data = lambda data : ((data[17] << 7))  | (data[18] & 0x7F)
         if data[16] == 0xA7:
             val = parse_measure_data(data)
