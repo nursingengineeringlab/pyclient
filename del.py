@@ -1,12 +1,7 @@
-from email.mime import base
 import sys
 import requests
-from apihandler import custom_senior_delete, request_headers
-
-
-base_port = "8000"
-base_url = "http://127.0.0.1:" + base_port + "/"
-
+from apihandler import custom_senior_delete
+from config import base_url, request_headers
 
 
 def cleanup_users():

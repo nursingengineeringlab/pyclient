@@ -54,6 +54,8 @@ class TestECG(Logger):
 
     async def run(self):
         url = websocket_url + 'ws/sensor/RR'
+        counter = 0
+        flip_second = 3
         async with websockets.connect(url) as websocket:
             test_json = {
                 "command" : "new",
@@ -61,20 +63,20 @@ class TestECG(Logger):
             while True:
                 for s in senior_queue.queue:
                     if int(time.time()) - s.last_data_update_time > UPDATE_DATA_TIMEOUT:
-                        new_rand_value = randint(60, 120)
+                        new_rand_rri = randint(800, 1250)
+                        new_rand_temp = randint(96, 99)
                         test_json["device_id"] = s.id
                         test_json["sequence_id"] = s.seq
-                        test_json["value"] = new_rand_value
+                        test_json["value"] = new_rand_rri if counter % flip_second else new_rand_temp
                         test_json["battery"] = 60
                         test_json["active"] = True
-                        test_json["data_type"] = "temp" if new_rand_value > 100 else "rri"
+                        print(counter)
+                        test_json["data_type"] = "RRI" if counter % 10 else "TEMP"
                         test_json["time"] = int(round(time.time() * 1000))
-                        # print(time.time())
-                        # print(len(json.dumps(test_json)))
-                        # print(time.time())
                         await websocket.send(json.dumps(test_json))
                         s.last_data_update_time = int(time.time())
                         s.seq = s.seq + 1
+                        counter = counter + 1
                         test_json["command"] = "update"
 
 

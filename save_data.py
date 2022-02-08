@@ -1,6 +1,5 @@
 import random
-
-filename = "./data_store/test.txt"
+from config import filename
 
 
 class FileManager:

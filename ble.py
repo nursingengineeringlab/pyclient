@@ -6,6 +6,7 @@ from logger import Logger
 from enum import Enum
 import threading
 import websocket
+from config import request_headers, test_device_id, base_url
 
 # Definitions   
 BASE_UUID       =  uuid.UUID('6E400000-B5A3-F393-E0A9-E50E24DCCA9E') # never used
@@ -22,11 +23,7 @@ class DeviceType(str, Enum):
 
 device_list = []
 log = Logger("BLE")
-request_headers = {'Content-Type': 'application/json', 'Authorization': 'Token 79bfff7c4e78a575af2226fde003609680112e85'}
 
-base_ip = "172.24.41.203:8000/"
-test_device_id      = "F43053011ACF"
-test_device_type    = "RRI"
 ws = None
 
         
@@ -36,7 +33,7 @@ def api_send_data(device_id, value, device_type):
         "time": int(time.time()),
         "value" : value
     }
-    url = base_ip + "sensordata/" + device_type + '/'
+    url = base_url + "sensordata/" + device_type + '/'
     r = requests.post(url, headers=request_headers, data=json.dumps(data))
 
 def ws_send_data(command, device_id, value, device_type):
@@ -132,7 +129,7 @@ if __name__ == "__main__":
     log.debug("Starting WebSocket")
     ws = websocket.WebSocket()
 
-    ws_url = "ws://" + base_ip + "ws/sensor/RR"
+    ws_url = "ws://" + base_url + "ws/sensor/RR"
 
     print(ws_url)
     ws.connect(ws_url)
