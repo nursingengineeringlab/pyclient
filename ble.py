@@ -66,9 +66,10 @@ class ScanDelegate(btle.DefaultDelegate):
             # print("Received new data from", dev.addr)
 
 class DeviceDelegate(btle.DefaultDelegate):
-    def __init__(self, mac_address):
+    def __init__(self, mac_address, interval):
         btle.DefaultDelegate.__init__(self)
         self.dev_name = mac_address_to_name(mac_address)
+        self.send_interval = interval
         # ... initialise here
 
     def handleNotification(self, cHandle, data):
@@ -82,7 +83,10 @@ class DeviceDelegate(btle.DefaultDelegate):
         elif data[16] == 0xAB:
             val = parse_measure_data(data)
             # print(f"Temperature: {val}")
-            ws_send_data("update", self.dev_name, val, DataType.TEMP)
+            self.send_interval = self.send_interval + 1
+            # send out temperatue only 5s interval
+            if self.send_interval % 5 is 0:
+                ws_send_data("update", self.dev_name, val, DataType.TEMP)
         elif data[16] == 0x92:
             pass
             # val = parse_measure_data(data)
@@ -98,7 +102,7 @@ class DeviceDelegate(btle.DefaultDelegate):
             # print("Received data %s " % hexlify(data))
 
 
-def device_handler(devices, websocket):
+def device_handler(devices):
     for dev in devices:
         try:
             dev_data = dev.getScanData()
@@ -112,7 +116,7 @@ def device_handler(devices, websocket):
             if dev_name == TARGET_NAME:
                 log.debug(f"Found Mezoo Device Mac Address: {dev.addr}")
                 periph = btle.Peripheral(dev, "random")     # supply scan entry as arg
-                periph.setDelegate(DeviceDelegate(dev.addr))
+                periph.setDelegate(DeviceDelegate(dev.addr, 0))
 
                 # Setup to turn notifications on
                 svc = periph.getServiceByUUID(SERVICE_UUID)
@@ -125,10 +129,12 @@ def device_handler(devices, websocket):
             else:
                 pass
                 # print("other bluetooth device ignore it")
-
-        except Exception as e:
-            print(e)
-            pass
+        finally:
+            ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI)
+            periph.disconnect()
+        # except Exception as e:
+        #     print(e)
+        #     pass
 
 
 if __name__ == "__main__":
@@ -144,7 +150,7 @@ if __name__ == "__main__":
     # try:
     while True:
         devices = scanner.scan(5.0, passive=True)
-        handler = threading.Thread(target=device_handler, args=(devices, ws), daemon=True)
+        handler = threading.Thread(target=device_handler, args=(devices), daemon=True)
         handler.start()
         time.sleep(2)
     # except Exception as e:
