@@ -67,10 +67,11 @@ class TestECG(Logger):
                         test_json["value"] = new_rand_value
                         test_json["battery"] = 60
                         test_json["active"] = True
+                        test_json["data_type"] = "temp" if new_rand_value > 100 else "rri"
                         test_json["time"] = int(round(time.time() * 1000))
-                        print(time.time())
-                        print(len(json.dumps(test_json)))
-                        print(time.time())
+                        # print(time.time())
+                        # print(len(json.dumps(test_json)))
+                        # print(time.time())
                         await websocket.send(json.dumps(test_json))
                         s.last_data_update_time = int(time.time())
                         s.seq = s.seq + 1
