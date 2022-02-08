@@ -1,17 +1,16 @@
 from email.mime import base
 import sys
 import requests
-from apihandler import custom_senior_delete
+from apihandler import custom_senior_delete, request_headers
 
 
-base_url = "http://127.0.0.1:30007/"
-request_headers = {'Content-Type': 'application/json'}
-api_user = "test"
-api_password = "test"
+base_port = "8000"
+base_url = "http://127.0.0.1:" + base_port + "/"
+
 
 
 def cleanup_users():
-    r = requests.get(base_url+"seniors/?format=json", headers=request_headers, auth=(api_user, api_password))
+    r = requests.get(base_url+"seniors/?format=json", headers=request_headers)
     print(r.json())
     for rs in r.json()['results']:
         print(rs['device_id'])
