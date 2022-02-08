@@ -76,24 +76,27 @@ class DeviceDelegate(btle.DefaultDelegate):
         parse_measure_data = lambda data : ((data[17] << 7))  | (data[18] & 0x7F)
         if data[16] == 0xA7:
             val = parse_measure_data(data)
-            print(f"RRI: {val}")
+            # print(f"RRI: {val}")
             #print(f'High: {data[17]}')
             #print(f'Low: {data[18]}')
             ws_send_data("update", test_device_id, val, DeviceType.RRI)
         elif data[16] == 0xAB:
             val = parse_measure_data(data)
-            print(f"Temperature: {val}")
+            # print(f"Temperature: {val}")
             ws_send_data("update", test_device_id, val, DeviceType.TEMP)
         elif data[16] == 0x92:
+            pass
             # val = parse_measure_data(data)
             # print(f"Heart Rate: {val}")
-            print("Heart Rate: No support API yet send to server")
+            # print("Heart Rate: No support API yet send to server")
         elif data[16] == 0x9D:
+            pass
             # val = parse_measure_data(data)
             # print(f"Battery check: {val}")
-            print("Battery check: No support API yet send to server")
+            # print("Battery check: No support API yet send to server")
         else:
-            print("Received data %s " % hexlify(data))
+            pass
+            # print("Received data %s " % hexlify(data))
 
 
 def device_handler(devices, websocket):
