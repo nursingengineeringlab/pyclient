@@ -66,6 +66,7 @@ class TestECG(Logger):
                         test_json["sequence_id"] = s.seq
                         test_json["value"] = new_rand_value
                         test_json["battery"] = 60
+                        test_json["active"] = True
                         test_json["time"] = int(round(time.time() * 1000))
                         print(time.time())
                         print(len(json.dumps(test_json)))
