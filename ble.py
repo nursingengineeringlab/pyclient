@@ -38,13 +38,14 @@ def api_send_data(device_id, value, device_type):
     url = base_url + "sensordata/" + device_type + '/'
     r = requests.post(url, headers=request_headers, data=json.dumps(data))
 
-def ws_send_data(command, device_id, value, data_type):
+def ws_send_data(command, device_id, value, data_type, active):
     data = {
         "command": command,
         "device_id": device_id,
         "time": int(time.time()),
         "value" : value,
         "data_type": data_type,
+        "active": active,
         "battery" : 60,
         "sequence_id": 1,
     }
@@ -79,14 +80,14 @@ class DeviceDelegate(btle.DefaultDelegate):
             # print(f"RRI: {val}")
             #print(f'High: {data[17]}')
             #print(f'Low: {data[18]}')
-            ws_send_data("update", self.dev_name, val, DataType.RRI)
+            ws_send_data("update", self.dev_name, val, DataType.RRI, True)
         elif data[16] == 0xAB:
             val = parse_measure_data(data)
             # print(f"Temperature: {val}")
             self.send_interval = self.send_interval + 1
             # send out temperatue only 5s interval
             if self.send_interval % 5 is 0:
-                ws_send_data("update", self.dev_name, val, DataType.TEMP)
+                ws_send_data("update", self.dev_name, val, DataType.TEMP, True)
         elif data[16] == 0x92:
             pass
             # val = parse_measure_data(data)
@@ -104,7 +105,6 @@ class DeviceDelegate(btle.DefaultDelegate):
 
 def device_handler(devices):
     for dev in devices:
-        try:
             dev_data = dev.getScanData()
             if len(dev_data) < 2 and len(dev_data[1]) < 3:
                 print("dev_data is too short, not Mezoo device")
@@ -114,24 +114,26 @@ def device_handler(devices):
             dev_name = dev_data[1][2] or None
             # print("Another name :", )
             if dev_name == TARGET_NAME:
-                log.debug(f"Found Mezoo Device Mac Address: {dev.addr}")
-                periph = btle.Peripheral(dev, "random")     # supply scan entry as arg
-                periph.setDelegate(DeviceDelegate(dev.addr, 0))
+                try:
+                    log.debug(f"Found Mezoo Device Mac Address: {dev.addr}")
+                    periph = btle.Peripheral(dev, "random")     # supply scan entry as arg
+                    periph.setDelegate(DeviceDelegate(dev.addr, 0))
 
-                # Setup to turn notifications on
-                svc = periph.getServiceByUUID(SERVICE_UUID)
-                ch = svc.getCharacteristics(NOTIFY_CHR_UUID)[0]
-                periph.writeCharacteristic(ch.getHandle()+1, b"\x01\x00", True)
-                
-                while True:
-                    if periph.waitForNotifications(1.0):
-                        continue
+                    # Setup to turn notifications on
+                    svc = periph.getServiceByUUID(SERVICE_UUID)
+                    ch = svc.getCharacteristics(NOTIFY_CHR_UUID)[0]
+                    periph.writeCharacteristic(ch.getHandle()+1, b"\x01\x00", True)
+                    
+                    while True:
+                        if periph.waitForNotifications(1.0):
+                            continue
+                finally:
+                    ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI, False)
+                    periph.disconnect()
             else:
                 pass
+
                 # print("other bluetooth device ignore it")
-        finally:
-            ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI)
-            periph.disconnect()
         # except Exception as e:
         #     print(e)
         #     pass
