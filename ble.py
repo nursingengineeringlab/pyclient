@@ -108,7 +108,7 @@ def device_handler(devices, websocket):
             dev_name = dev_data[1][2] or None
             # print("Another name :", )
             if dev_name == TARGET_NAME:
-                log.debug("Found Mezoo Device", dev_name)
+                log.debug(f"Found Mezoo Device: {dev_name}")
                 log.debug(f"Connecting to: {dev.addr}")
             
                 periph = btle.Peripheral(dev, "random")     # supply scan entry as arg
