@@ -80,14 +80,15 @@ class DeviceDelegate(btle.DefaultDelegate):
             # print(f"RRI: {val}")
             #print(f'High: {data[17]}')
             #print(f'Low: {data[18]}')
+            # print("val")
             ws_send_data("update", self.dev_name, val, DataType.RRI, True)
         elif data[16] == 0xAB:
             val = parse_measure_data(data)
             # print(f"Temperature: {val}")
-            self.send_interval = self.send_interval + 1
+            # self.send_interval = self.send_interval + 1
             # send out temperatue only 5s interval
-            if self.send_interval % 5 is 0:
-                ws_send_data("update", self.dev_name, val, DataType.TEMP, True)
+            # if self.send_interval % 5 is 0:
+                # ws_send_data("update", self.dev_name, val, DataType.TEMP, True)
         elif data[16] == 0x92:
             pass
             # val = parse_measure_data(data)
