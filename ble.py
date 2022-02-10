@@ -42,7 +42,7 @@ def ws_send_data(command, device_id, value, data_type, active):
     data = {
         "command": command,
         "device_id": device_id,
-        # "time": int(time.time()),
+        "time": int(time.time()),
         "value" : value,
         "data_type": data_type,
         "active": active,
