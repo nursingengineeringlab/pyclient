@@ -127,6 +127,10 @@ def device_handler(devices):
                     while True:
                         if periph.waitForNotifications(1.0):
                             continue
+                        
+                except Exception as e:
+                    print(e)
+                    pass
                 finally:
                     ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI, False)
                     periph.disconnect()
