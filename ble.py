@@ -6,6 +6,7 @@ from enum import Enum
 import threading
 import websocket
 from config import request_headers, ws_url, base_url
+from threading import Timer
 
 # Definitions   
 BASE_UUID       =  uuid.UUID('6E400000-B5A3-F393-E0A9-E50E24DCCA9E') # never used
@@ -13,6 +14,13 @@ SERVICE_UUID    =  uuid.UUID('6E400001-B5A3-F393-E0A9-E50E24DCCA9E')
 WRITE_CHR_UUID  =  uuid.UUID('6E400002-B5A3-F393-E0A9-E50E24DCCA9E') # never used
 NOTIFY_CHR_UUID =  uuid.UUID('6E400003-B5A3-F393-E0A9-E50E24DCCA9E')
 TARGET_NAME     =  'MZB24C20R(A)'
+
+
+class RepeatTimer(Timer):
+    def run(self):
+        while not self.finished.wait(self.interval):
+            self.function(*self.args, **self.kwargs)
+
 
 class DataType(str, Enum):
     RRI = 'RRI'
@@ -143,13 +151,21 @@ def device_handler(devices):
         #     pass
 
 
+def ping():
+    ws.send("ping")
+
 if __name__ == "__main__":
     log.debug("Starting WebSocket")
+    websocket.enableTrace(True)
     ws = websocket.WebSocket()
 
 
     print(ws_url)
     ws.connect(ws_url)
+
+    timer = RepeatTimer(10, ping)
+    timer.start()
+
 
     log.debug("Starting BLE Receiver")
     scanner = btle.Scanner().withDelegate(ScanDelegate())
