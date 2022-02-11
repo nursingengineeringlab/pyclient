@@ -106,7 +106,7 @@ class DeviceDelegate(btle.DefaultDelegate):
 def device_handler(devices):
     for dev in devices:
             dev_data = dev.getScanData()
-            if len(dev_data) < 2 and len(dev_data[1]) < 3:
+            if len(dev_data) < 2 or len(dev_data[1]) < 3:
                 print("dev_data is too short, not Mezoo device")
                 # log.debug(dev_data)
                 return
@@ -127,7 +127,7 @@ def device_handler(devices):
                     while True:
                         if periph.waitForNotifications(1.0):
                             continue
-                        
+
                 except Exception as e:
                     print(e)
                     pass
