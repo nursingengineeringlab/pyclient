@@ -142,7 +142,8 @@ if __name__ == "__main__":
     # websocket.enableTrace(True)
     ws = websocket.WebSocket()
     ws.connect(ws_url)
-    log.debug("Starting WebSocket: ", ws_url)
+    log.debug("Starting WebSocket")
+    log.debug(ws_url)
 
     timer = HeartBeatTimer(20, ping)
     timer.start()
