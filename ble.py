@@ -156,14 +156,14 @@ def ping():
 
 if __name__ == "__main__":
     log.debug("Starting WebSocket")
-    websocket.enableTrace(True)
+    # websocket.enableTrace(True)
     ws = websocket.WebSocket()
 
 
     print(ws_url)
     ws.connect(ws_url)
 
-    timer = RepeatTimer(10, ping)
+    timer = RepeatTimer(20, ping)
     timer.start()
 
 
