@@ -151,9 +151,15 @@ if __name__ == "__main__":
 
     log.debug("Starting BLE Receiver")
     scanner = btle.Scanner().withDelegate(ScanDelegate())
-    devices = scanner.scan(5.0, passive=True)
+    # devices = scanner.scan(5.0, passive=True)
+
 
     while True:
+        scanner.clear()
+        scanner.start(passive=True)
+        scanner.process(5.0)
+        # scanner.stop()
+        devices = scanner.getDevices()
         for dev in devices:
             dev_data = dev.getScanData()
             if len(dev_data) < 2 or len(dev_data[1]) < 3:
