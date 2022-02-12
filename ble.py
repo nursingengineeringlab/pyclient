@@ -134,7 +134,7 @@ def device_handler(dev):
         return
     
 
-
+# WebSocket need to have ping packet so that connection is opened
 def ping():
     ws.send("ping")
 
@@ -156,7 +156,7 @@ if __name__ == "__main__":
         for dev in devices:
             dev_data = dev.getScanData()
             if len(dev_data) < 2 or len(dev_data[1]) < 3:
-                print("dev_data is too short, not Mezoo device")
+                log.debug("dev_data is too short, not Mezoo device")
                 # log.debug(dev_data)
                 continue
 
@@ -166,6 +166,3 @@ if __name__ == "__main__":
                 handler.start()
             else:
                 pass
-        time.sleep(2)
-    # except Exception as e:
-        # pass
