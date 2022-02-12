@@ -128,6 +128,8 @@ def device_handler(dev):
 
     except Exception as e:
         pass
+    except btle.BTLEDisconnectError as e:
+        pass
     finally:
         ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI, False)
         device_list.remove(dev.addr)
