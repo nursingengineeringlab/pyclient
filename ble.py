@@ -153,18 +153,21 @@ if __name__ == "__main__":
     scanner = btle.Scanner().withDelegate(ScanDelegate())
 
     while True:
-        devices = scanner.scan(5.0, passive=True)
-        for dev in devices:
-            if dev.addr not in device_list:
-                dev_data = dev.getScanData()
-                if len(dev_data) < 2 or len(dev_data[1]) < 3:
-                    log.debug("dev_data is too short, not Mezoo device")
-                    # log.debug(dev_data)
-                    continue
+        try:
+            devices = scanner.scan(5.0, passive=True)
+            for dev in devices:
+                if dev.addr not in device_list:
+                    dev_data = dev.getScanData()
+                    if len(dev_data) < 2 or len(dev_data[1]) < 3:
+                        log.debug("dev_data is too short, not Mezoo device")
+                        # log.debug(dev_data)
+                        continue
 
-                dev_name = dev_data[1][2] or None
-                if dev_name == TARGET_NAME:
-                    handler = threading.Thread(target=device_handler, args=(dev,), daemon=True)
-                    handler.start()
-                else:
-                    pass
+                    dev_name = dev_data[1][2] or None
+                    if dev_name == TARGET_NAME:
+                        handler = threading.Thread(target=device_handler, args=(dev,), daemon=True)
+                        handler.start()
+                    else:
+                        pass
+        except btle.BTLEDisconnectError:
+            pass
