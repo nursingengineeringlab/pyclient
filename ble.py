@@ -30,8 +30,8 @@ class DataType(str, Enum):
 
 device_list = []
 log = Logger("BLE")
-
 ws = None
+
 
 def mac_address_to_name(mac):
     return mac.replace(':', '').upper()
@@ -121,7 +121,7 @@ def device_handler(dev):
         svc = periph.getServiceByUUID(SERVICE_UUID)
         ch = svc.getCharacteristics(NOTIFY_CHR_UUID)[0]
         periph.writeCharacteristic(ch.getHandle()+1, b"\x01\x00", True)
-        
+        device_list.append(dev.addr)
         while True:
             if periph.waitForNotifications(1.0):
                 continue
@@ -130,8 +130,8 @@ def device_handler(dev):
         pass
     finally:
         ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI, False)
-        if periph is not None:
-            periph.disconnect()
+        device_list.remove(dev.addr)
+        periph.disconnect()
         return
     
 
@@ -162,7 +162,7 @@ if __name__ == "__main__":
                 continue
 
             dev_name = dev_data[1][2] or None
-            if dev_name == TARGET_NAME:
+            if dev_name == TARGET_NAME and dev.addr not in device_list:
                 handler = threading.Thread(target=device_handler, args=(dev,), daemon=True)
                 handler.start()
             else:
