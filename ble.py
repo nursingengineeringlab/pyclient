@@ -112,9 +112,9 @@ class DeviceDelegate(btle.DefaultDelegate):
 
 
 def device_handler(dev):
+    periph = btle.Peripheral(dev, "random")
     try:
         log.debug(f"Found Mezoo Device Mac Address: {dev.addr}")
-        periph = btle.Peripheral(dev, "random")     # supply scan entry as arg
         periph.setDelegate(DeviceDelegate(dev.addr, 0))
 
         # Setup to turn notifications on
@@ -130,7 +130,8 @@ def device_handler(dev):
         pass
     finally:
         ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI, False)
-        periph.disconnect()
+        if periph is not None:
+            periph.disconnect()
         return
     
 
