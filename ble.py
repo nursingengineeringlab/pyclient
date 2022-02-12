@@ -132,6 +132,7 @@ def device_handler(dev):
         ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI, False)
         device_list.remove(dev.addr)
         periph.disconnect()
+        log.debug(f"Mezoo Device Mac Address: {dev.addr} disconnected")
         return
     
 
@@ -159,7 +160,7 @@ if __name__ == "__main__":
                 if dev.addr not in device_list:
                     dev_data = dev.getScanData()
                     if len(dev_data) < 2 or len(dev_data[1]) < 3:
-                        log.debug("dev_data is too short, not Mezoo device")
+                        # log.debug("dev_data is too short, not Mezoo device")
                         # log.debug(dev_data)
                         continue
 
