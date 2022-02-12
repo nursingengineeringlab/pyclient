@@ -16,7 +16,7 @@ NOTIFY_CHR_UUID =  uuid.UUID('6E400003-B5A3-F393-E0A9-E50E24DCCA9E')
 TARGET_NAME     =  'MZB24C20R(A)'
 
 
-class RepeatTimer(Timer):
+class HeartBeatTimer(Timer):
     def run(self):
         while not self.finished.wait(self.interval):
             self.function(*self.args, **self.kwargs)
@@ -111,69 +111,60 @@ class DeviceDelegate(btle.DefaultDelegate):
             # print("Received data %s " % hexlify(data))
 
 
-def device_handler(devices):
-    for dev in devices:
-            dev_data = dev.getScanData()
-            if len(dev_data) < 2 or len(dev_data[1]) < 3:
-                print("dev_data is too short, not Mezoo device")
-                # log.debug(dev_data)
-                return
+def device_handler(dev):
+    try:
+        log.debug(f"Found Mezoo Device Mac Address: {dev.addr}")
+        periph = btle.Peripheral(dev, "random")     # supply scan entry as arg
+        periph.setDelegate(DeviceDelegate(dev.addr, 0))
 
-            dev_name = dev_data[1][2] or None
-            # print("Another name :", )
-            if dev_name == TARGET_NAME:
-                try:
-                    log.debug(f"Found Mezoo Device Mac Address: {dev.addr}")
-                    periph = btle.Peripheral(dev, "random")     # supply scan entry as arg
-                    periph.setDelegate(DeviceDelegate(dev.addr, 0))
+        # Setup to turn notifications on
+        svc = periph.getServiceByUUID(SERVICE_UUID)
+        ch = svc.getCharacteristics(NOTIFY_CHR_UUID)[0]
+        periph.writeCharacteristic(ch.getHandle()+1, b"\x01\x00", True)
+        
+        while True:
+            if periph.waitForNotifications(1.0):
+                continue
 
-                    # Setup to turn notifications on
-                    svc = periph.getServiceByUUID(SERVICE_UUID)
-                    ch = svc.getCharacteristics(NOTIFY_CHR_UUID)[0]
-                    periph.writeCharacteristic(ch.getHandle()+1, b"\x01\x00", True)
-                    
-                    while True:
-                        if periph.waitForNotifications(1.0):
-                            continue
-
-                except Exception as e:
-                    print(e)
-                    pass
-                finally:
-                    ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI, False)
-                    periph.disconnect()
-            else:
-                pass
-
-                # print("other bluetooth device ignore it")
-        # except Exception as e:
-        #     print(e)
-        #     pass
+    except Exception as e:
+        pass
+    finally:
+        ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI, False)
+        periph.disconnect()
+        return
+    
 
 
 def ping():
     ws.send("ping")
 
 if __name__ == "__main__":
-    log.debug("Starting WebSocket")
     # websocket.enableTrace(True)
     ws = websocket.WebSocket()
-
-
-    print(ws_url)
     ws.connect(ws_url)
+    log.debug("Starting WebSocket: ", ws_url)
 
-    timer = RepeatTimer(20, ping)
+    timer = HeartBeatTimer(20, ping)
     timer.start()
-
 
     log.debug("Starting BLE Receiver")
     scanner = btle.Scanner().withDelegate(ScanDelegate())
-    # try:
+
     while True:
         devices = scanner.scan(5.0, passive=True)
-        handler = threading.Thread(target=device_handler, args=(devices,), daemon=True)
-        handler.start()
+        for dev in devices:
+            dev_data = dev.getScanData()
+            if len(dev_data) < 2 or len(dev_data[1]) < 3:
+                print("dev_data is too short, not Mezoo device")
+                # log.debug(dev_data)
+                continue
+
+            dev_name = dev_data[1][2] or None
+            if dev_name == TARGET_NAME:
+                handler = threading.Thread(target=device_handler, args=(dev,), daemon=True)
+                handler.start()
+            else:
+                pass
         time.sleep(2)
     # except Exception as e:
         # pass
