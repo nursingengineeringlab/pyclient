@@ -176,5 +176,6 @@ if __name__ == "__main__":
                         handler.start()
                     else:
                         pass
-        except btle.BTLEDisconnectError:
+        except btle.BTLEDisconnectError as e:
+            log.debug(e)
             pass
