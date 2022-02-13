@@ -132,7 +132,8 @@ def device_handler(dev):
         pass
     finally:
         ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI, False)
-        device_list.remove(dev.addr)
+        if dev.addr in device_list:
+            device_list.remove(dev.addr)
         periph.disconnect()
         log.debug(f"Mezoo Device Mac Address: {dev.addr} disconnected")
         return
