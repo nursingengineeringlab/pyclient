@@ -15,7 +15,6 @@ WRITE_CHR_UUID  =  uuid.UUID('6E400002-B5A3-F393-E0A9-E50E24DCCA9E') # never use
 NOTIFY_CHR_UUID =  uuid.UUID('6E400003-B5A3-F393-E0A9-E50E24DCCA9E')
 TARGET_NAME     =  'MZB24C20R(A)'
 
-dev_lock = threading.Lock()
 
 
 class HeartBeatTimer(Timer):
@@ -29,7 +28,8 @@ class DataType(str, Enum):
     TEMP = 'TEMP'
     SPO2 = 'SPO2'
 
-
+dev_lock = threading.Lock()
+# shared multipthread global var
 device_list = []
 log = Logger("BLE")
 ws = None
@@ -115,16 +115,16 @@ class DeviceDelegate(btle.DefaultDelegate):
 
 def device_handler(dev):
     try:
-        # with dev_lock:
-        periph = btle.Peripheral(dev, "random")
-        log.debug(f"Found Mezoo Device Mac Address: {dev.addr}")
-        periph.setDelegate(DeviceDelegate(dev.addr, 0))
+        with dev_lock:
+            device_list.append(dev.addr)
+            periph = btle.Peripheral(dev, "random")
+            log.debug(f"Found Mezoo Device Mac Address: {dev.addr}")
+            periph.setDelegate(DeviceDelegate(dev.addr, 0))
 
-        # Setup to turn notifications on
-        svc = periph.getServiceByUUID(SERVICE_UUID)
-        ch = svc.getCharacteristics(NOTIFY_CHR_UUID)[0]
-        periph.writeCharacteristic(ch.getHandle()+1, b"\x01\x00", True)
-        device_list.append(dev.addr)
+            # Setup to turn notifications on
+            svc = periph.getServiceByUUID(SERVICE_UUID)
+            ch = svc.getCharacteristics(NOTIFY_CHR_UUID)[0]
+            periph.writeCharacteristic(ch.getHandle()+1, b"\x01\x00", True)
         while True:
             if periph.waitForNotifications(1.0):
                 continue
@@ -134,11 +134,11 @@ def device_handler(dev):
         pass
     finally:
         ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI, False)
-        # with dev_lock:
-        if dev.addr in device_list:
-            device_list.remove(dev.addr)
-        periph.disconnect()
-        log.debug(f"Mezoo Device Mac Address: {dev.addr} disconnected")
+        with dev_lock:
+            if dev.addr in device_list:
+                device_list.remove(dev.addr)
+            periph.disconnect()
+            log.debug(f"Mezoo Device Mac Address: {dev.addr} disconnected")
         return
     
 
