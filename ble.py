@@ -112,6 +112,7 @@ class DeviceDelegate(btle.DefaultDelegate):
 
 
 def device_handler(dev):
+    periph = None
     try:
         periph = btle.Peripheral(dev, "random")
         log.debug(f"Found Mezoo Device Mac Address: {dev.addr}")
