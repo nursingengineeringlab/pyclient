@@ -115,16 +115,16 @@ class DeviceDelegate(btle.DefaultDelegate):
 
 def device_handler(dev):
     try:
-        with dev_lock:
-            periph = btle.Peripheral(dev, "random")
-            log.debug(f"Found Mezoo Device Mac Address: {dev.addr}")
-            periph.setDelegate(DeviceDelegate(dev.addr, 0))
+        # with dev_lock:
+        periph = btle.Peripheral(dev, "random")
+        log.debug(f"Found Mezoo Device Mac Address: {dev.addr}")
+        periph.setDelegate(DeviceDelegate(dev.addr, 0))
 
-            # Setup to turn notifications on
-            svc = periph.getServiceByUUID(SERVICE_UUID)
-            ch = svc.getCharacteristics(NOTIFY_CHR_UUID)[0]
-            periph.writeCharacteristic(ch.getHandle()+1, b"\x01\x00", True)
-            device_list.append(dev.addr)
+        # Setup to turn notifications on
+        svc = periph.getServiceByUUID(SERVICE_UUID)
+        ch = svc.getCharacteristics(NOTIFY_CHR_UUID)[0]
+        periph.writeCharacteristic(ch.getHandle()+1, b"\x01\x00", True)
+        device_list.append(dev.addr)
         while True:
             if periph.waitForNotifications(1.0):
                 continue
@@ -135,11 +135,11 @@ def device_handler(dev):
         pass
     finally:
         ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI, False)
-        with dev_lock:
-            if dev.addr in device_list:
-                device_list.remove(dev.addr)
-            periph.disconnect()
-            log.debug(f"Mezoo Device Mac Address: {dev.addr} disconnected")
+        # with dev_lock:
+        if dev.addr in device_list:
+            device_list.remove(dev.addr)
+        periph.disconnect()
+        log.debug(f"Mezoo Device Mac Address: {dev.addr} disconnected")
         return
     
 
@@ -163,10 +163,8 @@ if __name__ == "__main__":
     while True:
         try:
             devices = scanner.scan(5.0, passive=True)
-            print(devices)
             for dev in devices:
                 if dev.addr not in device_list:
-                    print(device_list)
                     dev_data = dev.getScanData()
                     if len(dev_data) < 2 or len(dev_data[1]) < 3:
                         # log.debug("dev_data is too short, not Mezoo device")
