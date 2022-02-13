@@ -129,9 +129,8 @@ def device_handler(dev):
             if periph.waitForNotifications(1.0):
                 continue
 
-    except Exception as e:
-        pass
-    except btle.BTLEDisconnectError as e:
+    except (btle.BTLEException, btle.BTLEDisconnectError, Exception, UnboundLocalError) as e:
+        log.debug(e)
         pass
     finally:
         ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI, False)
