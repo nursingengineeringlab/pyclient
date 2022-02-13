@@ -163,8 +163,10 @@ if __name__ == "__main__":
     while True:
         try:
             devices = scanner.scan(5.0, passive=True)
+            print(devices)
             for dev in devices:
                 if dev.addr not in device_list:
+                    print(device_list)
                     dev_data = dev.getScanData()
                     if len(dev_data) < 2 or len(dev_data[1]) < 3:
                         # log.debug("dev_data is too short, not Mezoo device")
