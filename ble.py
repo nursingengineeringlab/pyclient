@@ -14,8 +14,7 @@ SERVICE_UUID    =  uuid.UUID('6E400001-B5A3-F393-E0A9-E50E24DCCA9E')
 WRITE_CHR_UUID  =  uuid.UUID('6E400002-B5A3-F393-E0A9-E50E24DCCA9E') # never used
 NOTIFY_CHR_UUID =  uuid.UUID('6E400003-B5A3-F393-E0A9-E50E24DCCA9E')
 TARGET_NAME     =  'MZB24C20R(A)'
-
-
+HEART_BEAT_INTERVAL = 10 # seconds
 
 class HeartBeatTimer(Timer):
     def run(self):
@@ -29,7 +28,7 @@ class DataType(str, Enum):
     SPO2 = 'SPO2'
 
 dev_lock = threading.Lock()
-# shared multipthread global var
+# shared multipthread global 
 device_list = []
 log = Logger("BLE")
 ws = None
@@ -153,7 +152,7 @@ if __name__ == "__main__":
     log.debug("Starting WebSocket")
     log.debug(ws_url)
 
-    timer = HeartBeatTimer(20, ping)
+    timer = HeartBeatTimer(HEART_BEAT_INTERVAL, ping)
     timer.start()
 
     log.debug("Starting BLE Receiver")
