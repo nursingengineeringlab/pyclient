@@ -1,5 +1,6 @@
 
-request_headers = {'Content-Type': 'application/json', 'Authorization': 'Token d1f345f5d081d6ee3e64f4d4f2883866233d4ff4'}
+auth_token = 'dd94c6e20c9ee32164e25dffca225e78028047c1'
+request_headers = {'Content-Type': 'application/json', 'Authorization': 'Token '+ auth_token}
 test_device_id      = "F43053011ACF"
 test_device_type    = "RRI"
 filename = "./data_store/test.txt"
