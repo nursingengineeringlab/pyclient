@@ -12,6 +12,7 @@ import os
 import multiprocessing
 from random import randint
 import paho.mqtt.client as mqtt
+import ecg_pb2
 
 # 连接成功回调
 def on_connect(client, userdata, flags, rc):
@@ -67,27 +68,37 @@ class TestECG(Logger):
     def run(self, mqttc):
         counter = 0
         flip_second = 3
-        test_json = {
-            "command" : "new",
-        }
+        packet = ecg_pb2.ECGPacket()
+        packet.command = ecg_pb2.ECGPacket.CommandType.NEW
+        # test_json = {
+        #     "command" : "new",
+        # }
         while True:
             for s in senior_queue.queue:
                 if int(time.time()) - s.last_data_update_time > UPDATE_DATA_TIMEOUT:
                     new_rand_rri = randint(800, 1250)
                     new_rand_temp = randint(96, 99)
-                    test_json["device_id"] = s.id
-                    test_json["sequence_id"] = s.seq
-                    test_json["value"] = new_rand_rri if counter % flip_second else new_rand_temp
-                    test_json["battery"] = 60
-                    test_json["active"] = True
-                    test_json["data_type"] = "RRI" if counter % flip_second else "TEMP"
-                    test_json["time"] = int(round(time.time() * 1000))
-                    mqttc.publish('emqtt',payload=json.dumps(test_json),qos=0)
+                    packet.device_id = s.id
+                    packet.sequence_id = s.seq
+                    packet.value = new_rand_rri if counter % flip_second else new_rand_temp
+                    packet.battery = 60
+                    packet.active = True
+                    packet.data_type = packet.DataType.RRI if counter % flip_second else packet.DataType.TEMP
+                    packet.time = int(round(time.time() * 1000))
+                    # test_json["device_id"] = s.id
+                    # test_json["sequence_id"] = s.seq
+                    # test_json["value"] = new_rand_rri if counter % flip_second else new_rand_temp
+                    # test_json["battery"] = 60
+                    # test_json["active"] = True
+                    # test_json["data_type"] = "RRI" if counter % flip_second else "TEMP"
+                    # test_json["time"] = int(round(time.time() * 1000))
+                    mqttc.publish('emqtt',payload=packet.SerializeToString(),qos=0)
                     # await websocket.send(json.dumps(test_json))
                     s.last_data_update_time = int(time.time())
                     s.seq = s.seq + 1
                     counter = counter + 1
-                    test_json["command"] = "update"
+                    # test_json["command"] = "update"
+                    packet.command = ecg_pb2.ECGPacket.CommandType.UPDATE
 
 
 if __name__ == '__main__':
