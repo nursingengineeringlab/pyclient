@@ -18,9 +18,9 @@ _sym_db = _symbol_database.Default()
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='ecg.proto',
   package='ecg',
-  syntax='proto2',
+  syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\tecg.proto\x12\x03\x65\x63g\"\x9c\x02\n\tECGPacket\x12+\n\x07\x63ommand\x18\x01 \x02(\x0e\x32\x1a.ecg.ECGPacket.CommandType\x12\x11\n\tdevice_id\x18\x02 \x02(\t\x12\x13\n\x0bsequence_id\x18\x03 \x02(\x05\x12\r\n\x05value\x18\x04 \x02(\x05\x12\x0f\n\x07\x62\x61ttery\x18\x05 \x02(\r\x12\x0e\n\x06\x61\x63tive\x18\x06 \x02(\x08\x12\x0c\n\x04time\x18\x07 \x01(\x04\x12/\n\tdata_type\x18\x08 \x02(\x0e\x32\x17.ecg.ECGPacket.DataType:\x03RRI\"\"\n\x0b\x43ommandType\x12\x07\n\x03NEW\x10\x01\x12\n\n\x06UPDATE\x10\x02\"\'\n\x08\x44\x61taType\x12\x07\n\x03RRI\x10\x01\x12\x08\n\x04TEMP\x10\x02\x12\x08\n\x04SPO2\x10\x03')
+  serialized_pb=_b('\n\tecg.proto\x12\x03\x65\x63g\"\xa2\x02\n\tECGPacket\x12+\n\x07\x63ommand\x18\x01 \x01(\x0e\x32\x1a.ecg.ECGPacket.CommandType\x12\x11\n\tdevice_id\x18\x02 \x01(\t\x12\x13\n\x0bsequence_id\x18\x03 \x01(\x05\x12\r\n\x05value\x18\x04 \x01(\x05\x12\x0f\n\x07\x62\x61ttery\x18\x05 \x01(\r\x12\x0e\n\x06\x61\x63tive\x18\x06 \x01(\x08\x12\x0c\n\x04time\x18\x07 \x01(\x04\x12*\n\tdata_type\x18\x08 \x01(\x0e\x32\x17.ecg.ECGPacket.DataType\"-\n\x0b\x43ommandType\x12\x07\n\x03NEW\x10\x00\x12\n\n\x06UPDATE\x10\x01\x12\t\n\x05\x43LOSE\x10\x02\"\'\n\x08\x44\x61taType\x12\x07\n\x03RRI\x10\x00\x12\x08\n\x04TEMP\x10\x01\x12\x08\n\x04SPO2\x10\x02\x62\x06proto3')
 )
 
 
@@ -32,18 +32,22 @@ _ECGPACKET_COMMANDTYPE = _descriptor.EnumDescriptor(
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='NEW', index=0, number=1,
+      name='NEW', index=0, number=0,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='UPDATE', index=1, number=2,
+      name='UPDATE', index=1, number=1,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='CLOSE', index=2, number=2,
       serialized_options=None,
       type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=228,
-  serialized_end=262,
+  serialized_start=223,
+  serialized_end=268,
 )
 _sym_db.RegisterEnumDescriptor(_ECGPACKET_COMMANDTYPE)
 
@@ -54,22 +58,22 @@ _ECGPACKET_DATATYPE = _descriptor.EnumDescriptor(
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='RRI', index=0, number=1,
+      name='RRI', index=0, number=0,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='TEMP', index=1, number=2,
+      name='TEMP', index=1, number=1,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='SPO2', index=2, number=3,
+      name='SPO2', index=2, number=2,
       serialized_options=None,
       type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=264,
-  serialized_end=303,
+  serialized_start=270,
+  serialized_end=309,
 )
 _sym_db.RegisterEnumDescriptor(_ECGPACKET_DATATYPE)
 
@@ -83,42 +87,42 @@ _ECGPACKET = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='command', full_name='ecg.ECGPacket.command', index=0,
-      number=1, type=14, cpp_type=8, label=2,
-      has_default_value=False, default_value=1,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='device_id', full_name='ecg.ECGPacket.device_id', index=1,
-      number=2, type=9, cpp_type=9, label=2,
+      number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='sequence_id', full_name='ecg.ECGPacket.sequence_id', index=2,
-      number=3, type=5, cpp_type=1, label=2,
+      number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='value', full_name='ecg.ECGPacket.value', index=3,
-      number=4, type=5, cpp_type=1, label=2,
+      number=4, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='battery', full_name='ecg.ECGPacket.battery', index=4,
-      number=5, type=13, cpp_type=3, label=2,
+      number=5, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='active', full_name='ecg.ECGPacket.active', index=5,
-      number=6, type=8, cpp_type=7, label=2,
+      number=6, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -132,8 +136,8 @@ _ECGPACKET = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='data_type', full_name='ecg.ECGPacket.data_type', index=7,
-      number=8, type=14, cpp_type=8, label=2,
-      has_default_value=True, default_value=1,
+      number=8, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -147,12 +151,12 @@ _ECGPACKET = _descriptor.Descriptor(
   ],
   serialized_options=None,
   is_extendable=False,
-  syntax='proto2',
+  syntax='proto3',
   extension_ranges=[],
   oneofs=[
   ],
   serialized_start=19,
-  serialized_end=303,
+  serialized_end=309,
 )
 
 _ECGPACKET.fields_by_name['command'].enum_type = _ECGPACKET_COMMANDTYPE

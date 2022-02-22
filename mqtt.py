@@ -85,19 +85,10 @@ class TestECG(Logger):
                     packet.active = True
                     packet.data_type = packet.DataType.RRI if counter % flip_second else packet.DataType.TEMP
                     packet.time = int(round(time.time() * 1000))
-                    # test_json["device_id"] = s.id
-                    # test_json["sequence_id"] = s.seq
-                    # test_json["value"] = new_rand_rri if counter % flip_second else new_rand_temp
-                    # test_json["battery"] = 60
-                    # test_json["active"] = True
-                    # test_json["data_type"] = "RRI" if counter % flip_second else "TEMP"
-                    # test_json["time"] = int(round(time.time() * 1000))
                     mqttc.publish('emqtt',payload=packet.SerializeToString(),qos=0)
-                    # await websocket.send(json.dumps(test_json))
                     s.last_data_update_time = int(time.time())
                     s.seq = s.seq + 1
                     counter = counter + 1
-                    # test_json["command"] = "update"
                     packet.command = ecg_pb2.ECGPacket.CommandType.UPDATE
 
 
