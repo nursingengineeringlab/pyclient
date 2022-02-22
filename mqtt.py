@@ -67,12 +67,9 @@ class TestECG(Logger):
 
     def run(self, mqttc):
         counter = 0
-        flip_second = 3
+        flip_second = 5
         packet = ecg_pb2.ECGPacket()
         packet.command = ecg_pb2.ECGPacket.CommandType.NEW
-        # test_json = {
-        #     "command" : "new",
-        # }
         while True:
             for s in senior_queue.queue:
                 if int(time.time()) - s.last_data_update_time > UPDATE_DATA_TIMEOUT:
