@@ -5,8 +5,10 @@ from logger import Logger
 from enum import Enum
 import threading
 import websocket
-from config import request_headers, ws_url, base_url
+from config import request_headers, ws_url, base_url, base_ip
+import paho.mqtt.client as mqtt
 from threading import Timer
+import ecg_pb2
 
 # Definitions   
 BASE_UUID       =  uuid.UUID('6E400000-B5A3-F393-E0A9-E50E24DCCA9E') # never used
@@ -32,6 +34,17 @@ dev_lock = threading.Lock()
 device_list = []
 log = Logger("BLE")
 ws = None
+client = mqtt.Client()
+
+
+# 连接成功回调
+def on_connect(client, userdata, flags, rc):
+    print('Connected with result code '+str(rc))
+    client.subscribe('testtopic/#')
+
+# 消息接收回调
+def on_message(client, userdata, msg):
+    print(msg.topic+" "+str(msg.payload))
 
 
 def mac_address_to_name(mac):
@@ -59,6 +72,19 @@ def ws_send_data(command, device_id, value, data_type, active):
     }
     json_string = json.dumps(data)
     ws.send(json_string)
+
+def mqtt_send_data(command, device_id, value, data_type, active):
+    packet = ecg_pb2.ECGPacket()
+    packet.command = ecg_pb2.ECGPacket.CommandType.UPDATE if command == "update" else ecg_pb2.ECGPacket.CommandType.CLOSE
+    packet.device_id = device_id
+    # packet.sequence_id = s.seq
+    packet.value = value
+    packet.battery = 60
+    packet.active = active
+    packet.data_type = data_type
+    packet.time = int(round(time.time() * 1000))
+    client.publish('emqtt', payload=packet.SerializeToString(), qos=0)
+
 
 class ScanDelegate(btle.DefaultDelegate):
     def __init__(self):
@@ -89,14 +115,14 @@ class DeviceDelegate(btle.DefaultDelegate):
             #print(f'High: {data[17]}')
             #print(f'Low: {data[18]}')
             # print("val")
-            ws_send_data("update", self.dev_name, val, DataType.RRI, True)
+            mqtt_send_data("update", self.dev_name, val, DataType.RRI, True)
         elif data[16] == 0xAB:
             val = parse_measure_data(data)
             # print(f"Temperature: {val}")
             self.send_interval = self.send_interval + 1
             # send out temperatue only 5s interval
             if self.send_interval % 5 is 0:
-                ws_send_data("update", self.dev_name, val, DataType.TEMP, True)
+                mqtt_send_data("update", self.dev_name, val, DataType.TEMP, True)
         elif data[16] == 0x92:
             pass
             # val = parse_measure_data(data)
@@ -142,18 +168,26 @@ def device_handler(dev):
     
 
 # WebSocket need to have ping packet so that connection is opened
-def ping():
-    ws.send("ping")
+# def ping():
+#     ws.send("ping")
 
 if __name__ == "__main__":
     # websocket.enableTrace(True)
+
+    # 指定回调函数
+    client.on_connect = on_connect
+    client.on_message = on_message
+
+    # 建立连接
+    client.connect(base_ip, 1883, 60)
+
     ws = websocket.WebSocket()
     ws.connect(ws_url)
     log.debug("Starting WebSocket")
-    log.debug(ws_url)
 
-    timer = HeartBeatTimer(HEART_BEAT_INTERVAL, ping)
-    timer.start()
+
+    # timer = HeartBeatTimer(HEART_BEAT_INTERVAL, ping)
+    # timer.start()
 
     log.debug("Starting BLE Receiver")
     scanner = btle.Scanner().withDelegate(ScanDelegate())
