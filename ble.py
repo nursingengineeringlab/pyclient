@@ -81,7 +81,7 @@ def mqtt_send_data(command, device_id, value, data_type, active):
     packet.value = value
     packet.battery = 60
     packet.active = active
-    packet.data_type = data_type
+    packet.data_type = packet.DataType.RRI if data_type == DataType.RRI else packet.DataType.TEMP
     packet.time = int(round(time.time() * 1000))
     client.publish('emqtt', payload=packet.SerializeToString(), qos=0)
 
@@ -181,9 +181,9 @@ if __name__ == "__main__":
     # 建立连接
     client.connect(base_ip, 1883, 60)
 
-    ws = websocket.WebSocket()
-    ws.connect(ws_url)
-    log.debug("Starting WebSocket")
+    # ws = websocket.WebSocket()
+    # ws.connect(ws_url)
+    # log.debug("Starting WebSocket")
 
 
     # timer = HeartBeatTimer(HEART_BEAT_INTERVAL, ping)
