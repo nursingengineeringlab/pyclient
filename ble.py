@@ -157,7 +157,7 @@ def device_handler(dev):
         log.debug(e)
         pass
     finally:
-        ws_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI, False)
+        mqtt_send_data("close", mac_address_to_name(dev.addr), 0, DataType.RRI, False)
         with dev_lock:
             if dev.addr in device_list:
                 device_list.remove(dev.addr)
@@ -173,11 +173,9 @@ def device_handler(dev):
 if __name__ == "__main__":
     # websocket.enableTrace(True)
 
-    # 指定回调函数
     client.on_connect = on_connect
     client.on_message = on_message
 
-    # 建立连接
     client.connect(base_ip, 1883, 60)
 
     # ws = websocket.WebSocket()
