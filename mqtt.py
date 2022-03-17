@@ -94,7 +94,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='args.')
     parser.add_argument('-n', '--num', type=int, default=1)
     parser.add_argument('-d', '--dele', default=True)
-    parser.add_argument('-u', '--url', type=str, default='127.0.0.1')
+    parser.add_argument('-u', '--url', type=str, default='172.24.41.85')
     parser.add_argument('--port', type=int, default=8000)
 
     print("Number of cpu :", multiprocessing.cpu_count())
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     client.on_message = on_message
 
     # 建立连接
-    client.connect('127.0.0.1', 1883, 60)
+    client.connect('172.24.41.85', 1883, 60)
     # 发布消息
 
 

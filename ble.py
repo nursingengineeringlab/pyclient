@@ -4,8 +4,7 @@ import time, uuid, json, requests
 from logger import Logger
 from enum import Enum
 import threading
-import websocket
-from config import request_headers, ws_url, base_url, base_ip
+from config import request_headers, base_url, base_ip
 import paho.mqtt.client as mqtt
 from threading import Timer
 import ecg_pb2
