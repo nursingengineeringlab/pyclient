@@ -6,7 +6,8 @@ test_device_type    = "RRI"
 filename = "./data_store/test.txt"
 
 
-base_ip = "nelab.ddns.umass.edu"
+# base_ip = "nelab.ddns.umass.edu"
+base_ip = "20.231.78.167"
 base_port = "8000"
 base_url = "http://" + base_ip + ":" + base_port + "/"
 ws_url = "ws://" + base_ip + ":" + base_port + "/ws/sensor/RR"
