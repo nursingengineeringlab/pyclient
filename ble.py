@@ -177,7 +177,7 @@ if __name__ == "__main__":
     client.on_connect = on_connect
     client.on_message = on_message
 
-    client.connect(base_ip, 1883, 60)
+    client.connect(base_ip, 1883, keepalive=10)
 
     # ws = websocket.WebSocket()
     # ws.connect(ws_url)
