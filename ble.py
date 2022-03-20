@@ -35,7 +35,7 @@ log = Logger("BLE")
 ws = None
 client_id = "hcm_edge"
 client = mqtt.Client(client_id)
-
+seq_counter = 1
 
 
 def on_connect(client, userdata, flags, rc):
@@ -60,24 +60,25 @@ def api_send_data(device_id, value, device_type):
     url = base_url + "sensordata/" + device_type + '/'
     r = requests.post(url, headers=request_headers, data=json.dumps(data))
 
-def ws_send_data(command, device_id, value, data_type, active):
-    data = {
-        "command": command,
-        "device_id": device_id,
-        "time": int(time.time()),
-        "value" : value,
-        "data_type": data_type,
-        "active": active,
-        "battery" : 60,
-    }
-    json_string = json.dumps(data)
-    ws.send(json_string)
+# def ws_send_data(command, device_id, value, data_type, active):
+#     data = {
+#         "command": command,
+#         "device_id": device_id,
+#         "time": int(time.time()),
+#         "value" : value,
+#         "data_type": data_type,
+#         "active": active,
+#         "battery" : 60,
+#     }
+#     json_string = json.dumps(data)
+#     ws.send(json_string)
 
 def mqtt_send_data(command, device_id, value, data_type, active):
     packet = ecg_pb2.ECGPacket()
     packet.command = ecg_pb2.ECGPacket.CommandType.UPDATE if command == "update" else ecg_pb2.ECGPacket.CommandType.CLOSE
     packet.device_id = device_id
-    # packet.sequence_id = s.seq
+    packet.sequence_id = seq_counter
+    seq_counter = seq_counter + 1
     packet.value = value
     packet.battery = 60
     packet.active = active
