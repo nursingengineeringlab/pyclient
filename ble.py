@@ -33,7 +33,8 @@ dev_lock = threading.Lock()
 device_list = []
 log = Logger("BLE")
 ws = None
-client = mqtt.Client()
+client_id = "hcm_edge"
+client = mqtt.Client(client_id)
 
 
 
