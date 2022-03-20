@@ -74,6 +74,7 @@ def api_send_data(device_id, value, device_type):
 #     ws.send(json_string)
 
 def mqtt_send_data(command, device_id, value, data_type, active):
+    global seq_counter
     packet = ecg_pb2.ECGPacket()
     packet.command = ecg_pb2.ECGPacket.CommandType.UPDATE if command == "update" else ecg_pb2.ECGPacket.CommandType.CLOSE
     packet.device_id = device_id
