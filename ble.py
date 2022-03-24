@@ -172,7 +172,7 @@ if __name__ == "__main__":
     client.on_connect = on_connect
     client.on_message = on_message
 
-    client.connect(base_ip, mqtt_port, 60)
+    client.connect(base_ip, int(mqtt_port), 60)
 
     log.debug("Starting BLE Receiver")
     scanner = btle.Scanner().withDelegate(ScanDelegate())
