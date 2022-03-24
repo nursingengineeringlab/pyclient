@@ -1,5 +1,5 @@
 
-auth_token = '7560451cef66fb9769fb08c9bd7065ab4d31cb93'
+auth_token = '9208805fe4ba3e2d89f33777fc969d2727f26351'
 request_headers = {'Content-Type': 'application/json', 'Authorization': 'Token '+ auth_token}
 test_device_id      = "F43053011ACF"
 test_device_type    = "RRI"
