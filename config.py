@@ -7,7 +7,8 @@ filename = "./data_store/test.txt"
 
 
 base_ip = "nelab.ddns.umass.edu"
-base_port = "8000"
+mqtt_port = "30482"
+base_port = "31000"
 base_url = "http://" + base_ip + ":" + base_port + "/"
 ws_url = "ws://" + base_ip + ":" + base_port + "/ws/sensor/RR"
 
