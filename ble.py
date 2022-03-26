@@ -4,7 +4,7 @@ import time, uuid, json, requests
 from logger import Logger
 from enum import Enum
 import threading
-from config import request_headers, base_url, base_ip
+from config import request_headers, base_url, base_ip, mqtt_port
 import paho.mqtt.client as mqtt
 from threading import Timer
 import ecg_pb2
@@ -169,16 +169,13 @@ def device_handler(dev):
         return
     
 
-# WebSocket need to have ping packet so that connection is opened
-# def ping():
-#     ws.send("ping")
-
 if __name__ == "__main__":
     # websocket.enableTrace(True)
 
     client.on_connect = on_connect
     client.on_message = on_message
 
+<<<<<<< HEAD
     client.connect(base_ip, 1883, keepalive=10)
 
     # ws = websocket.WebSocket()
@@ -188,6 +185,9 @@ if __name__ == "__main__":
 
     # timer = HeartBeatTimer(HEART_BEAT_INTERVAL, ping)
     # timer.start()
+=======
+    client.connect(base_ip, int(mqtt_port), 60)
+>>>>>>> c400e03a0015753ddd482d24a519f7f4922ac340
 
     log.debug("Starting BLE Receiver")
     scanner = btle.Scanner().withDelegate(ScanDelegate())
