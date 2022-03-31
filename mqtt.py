@@ -13,6 +13,7 @@ import multiprocessing
 from random import randint
 import paho.mqtt.client as mqtt
 import ecg_pb2
+from config import base_ip, base_ip, mqtt_port
 
 # 连接成功回调
 def on_connect(client, userdata, flags, rc):
@@ -28,9 +29,6 @@ def on_message(client, userdata, msg):
 # seed random number generator
 # generate some integers
 
-base_url = ''
-port = ''
-api_url = ''
 senior_queue = queue.Queue()
 UPDATE_DATA_TIMEOUT = 1
 
@@ -59,7 +57,7 @@ class TestECG(Logger):
 
         if len(seniors) == 0:
             print("create new seniors")
-            seniors = [senior.senior_manager.make_senior(api_url) for _ in range(num_senior)]
+            seniors = [senior.senior_manager.make_senior(self.api_url) for _ in range(num_senior)]
 
         for s in seniors:
             senior_queue.put(s)
@@ -94,14 +92,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='args.')
     parser.add_argument('-n', '--num', type=int, default=1)
     parser.add_argument('-d', '--dele', default=True)
-    parser.add_argument('-u', '--url', type=str, default='172.24.41.85')
+    parser.add_argument('-u', '--url', type=str, default='nelab.ddns.umass.edu/')
     parser.add_argument('--port', type=int, default=8000)
 
     print("Number of cpu :", multiprocessing.cpu_count())
     args = parser.parse_args()
-    base_url = args.url
-    port = str(args.port)
-    api_url =  "http://" + base_url + ":" + port + "/"
+    api_url =  "https://" + base_ip + "/"
 
     input_num = args.num
     if args.dele is True:
@@ -120,7 +116,8 @@ if __name__ == '__main__':
     client.on_message = on_message
 
     # 建立连接
-    client.connect('172.24.41.85', 1883, 60)
+    client.tls_set()
+    client.connect(base_ip, int(mqtt_port), 60)
     # 发布消息
 
 

@@ -8,6 +8,7 @@ from config import request_headers, base_url, base_ip, mqtt_port
 import paho.mqtt.client as mqtt
 from threading import Timer
 import ecg_pb2
+import ssl
 
 # Definitions   
 BASE_UUID       =  uuid.UUID('6E400000-B5A3-F393-E0A9-E50E24DCCA9E') # never used
@@ -33,8 +34,12 @@ dev_lock = threading.Lock()
 device_list = []
 log = Logger("BLE")
 ws = None
+
 client_id = "hcm_edge"
+
+
 client = mqtt.Client(client_id)
+
 seq_counter = 1
 
 
@@ -123,7 +128,7 @@ class DeviceDelegate(btle.DefaultDelegate):
             # print(f"Temperature: {val}")
             self.send_interval = self.send_interval + 1
             # send out temperatue only 5s interval
-            if self.send_interval % 5 is 0:
+            if self.send_interval % 5 == 0:
                 mqtt_send_data("update", self.dev_name, val, DataType.TEMP, True)
         elif data[16] == 0x92:
             pass
@@ -174,20 +179,10 @@ if __name__ == "__main__":
 
     client.on_connect = on_connect
     client.on_message = on_message
-
-<<<<<<< HEAD
-    client.connect(base_ip, 1883, keepalive=10)
-
-    # ws = websocket.WebSocket()
-    # ws.connect(ws_url)
-    # log.debug("Starting WebSocket")
-
-
-    # timer = HeartBeatTimer(HEART_BEAT_INTERVAL, ping)
-    # timer.start()
-=======
+    # client.tls_set("./api-tls.crt", tls_version=ssl.PROTOCOL_TLSv1_2)
+    # client.tls_insecure_set(True)
+    client.tls_set()
     client.connect(base_ip, int(mqtt_port), 60)
->>>>>>> c400e03a0015753ddd482d24a519f7f4922ac340
 
     log.debug("Starting BLE Receiver")
     scanner = btle.Scanner().withDelegate(ScanDelegate())
