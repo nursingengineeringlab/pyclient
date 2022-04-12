@@ -6,6 +6,8 @@ from logger import Logger
 import names
 import time
 import json
+import urllib3
+urllib3.disable_warnings()
 
 
 class Senior:

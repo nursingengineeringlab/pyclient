@@ -70,7 +70,7 @@ class TestECG(Logger):
         packet.command = ecg_pb2.ECGPacket.CommandType.NEW
         while True:
             for s in senior_queue.queue:
-                if int(time.time()) - s.last_data_update_time > UPDATE_DATA_TIMEOUT:
+                if int(time.time()) - self.last_data_update_time > UPDATE_DATA_TIMEOUT:
                     new_rand_rri = randint(800, 1250)
                     new_rand_temp = randint(96, 99)
                     packet.device_id = s.id
@@ -97,7 +97,7 @@ if __name__ == '__main__':
 
     print("Number of cpu :", multiprocessing.cpu_count())
     args = parser.parse_args()
-    api_url =  "https://" + base_ip + "/"
+    api_url =  "http://" + base_ip + ":8000/"
 
     input_num = args.num
     if args.dele is True:
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     client.on_message = on_message
 
     # 建立连接
-    client.tls_set()
+    # client.tls_set('./api-tls.crt')
     client.connect(base_ip, int(mqtt_port), 60)
     # 发布消息
 
