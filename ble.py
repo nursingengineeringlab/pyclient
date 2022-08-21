@@ -181,7 +181,7 @@ if __name__ == "__main__":
     client.on_message = on_message
     # client.tls_set("./api-tls.crt", tls_version=ssl.PROTOCOL_TLSv1_2)
     # client.tls_insecure_set(True)
-    client.tls_set()
+    # client.tls_set()
     client.connect(base_ip, int(mqtt_port), 60)
 
     log.debug("Starting BLE Receiver")
