@@ -1,0 +1,10 @@
+[Unit]
+Description=HCM BLE Edge Node
+After=bluetooth.target
+
+[Service]
+WorkingDirectory=/opt/pyclient
+ExecStart=/opt/pyclient/venv/bin/python3 ble.py
+
+[Install]
+WantedBy=multi-user.target
